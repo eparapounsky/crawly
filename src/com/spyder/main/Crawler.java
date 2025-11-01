@@ -9,7 +9,7 @@ public class Crawler {
     private String saveLocation;
     private Downloader downloader;
 
-    public Crawler(String url, String saveLocation) {
+    public Crawler(String url, String saveLocation, Downloader downloader) {
         this.url = url;
         this.saveLocation = saveLocation;
         this.downloader = downloader;
