@@ -1,28 +1,20 @@
 package com.spyder.main;
 
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import java.io.File;
 import java.io.IOException;
 
 public class Downloader {
-    private String url;
-    private String location;
 
-    public Downloader(String url, String location) {
-        this.url = url;
-        this.location = location;
+    private Document webpage;
+
+    public Downloader(Document webpage) {
+        this.webpage = webpage;
     }
 
-    public void crawl() {
-        try {
-            Document webpage = Jsoup.connect(this.url).get(); // download the page HTML
-            createFile(webpage);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public void download(Document webpage) {
+        createFile(webpage);
     }
 
     private void createFile(Document webpage) {
