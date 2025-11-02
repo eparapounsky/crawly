@@ -8,8 +8,8 @@ public class Downloader {
 
     public void download(Document webpage) {
         try {
-            FileWriter myWriter = new FileWriter(webpage.title());
-            myWriter.write("File test");
+            FileWriter myWriter = new FileWriter(webpage.title() + ".html");
+            myWriter.write(webpage.html());  // write entire html doc
             myWriter.close();
         } catch (Exception e) {
             e.printStackTrace();
