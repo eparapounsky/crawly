@@ -2,6 +2,8 @@
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
+*.iml
+.idea/
 
 ### Maven ###
 target/
@@ -11,3 +13,7 @@ target/
 
 ### Mac OS ###
 .DS_Store
+
+### Generated Files ###
+*.html
+output/
