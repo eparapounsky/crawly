@@ -5,7 +5,7 @@ import org.jsoup.nodes.Document;
 
 public class Crawler {
 
-    private String url;
+    private final String url;
     private String saveLocation;
     private final Downloader downloader;
 
