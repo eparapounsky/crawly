@@ -6,6 +6,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.HashSet;
+import java.net.URI;
 
 public class Crawler {
 
@@ -45,10 +46,24 @@ public class Crawler {
             }
 
             for (Element link : links) {
-                if (visitedUrls.contains(link.attr("abs:href"))) {
+                String currentLink = link.attr("abs:href");
+
+                // prevent infinite loops
+                if (visitedUrls.contains(currentLink)) {
                     continue;
                 }
-                crawlHelper(link.attr("abs:href"), visitedUrls);
+
+                // do not follow external links
+                URI currentUri = new URI(currentLink);
+                String currentDomain = currentUri.getHost();
+
+                URI baseUri = new URI(this.url);
+                String originalDomain = baseUri.getHost();
+                if (!currentDomain.equals(originalDomain)) {
+                    continue;
+                }
+
+                crawlHelper(currentLink, visitedUrls);
             }
         } catch (Exception e) {
             e.printStackTrace();
