@@ -48,6 +48,11 @@ public class Crawler {
             for (Element link : links) {
                 String currentLink = link.attr("abs:href");
 
+                // prevent null or empty links
+                if (currentLink == null || currentLink.isEmpty()) {
+                    continue;
+                }
+
                 // prevent infinite loops
                 if (visitedUrls.contains(currentLink)) {
                     continue;
