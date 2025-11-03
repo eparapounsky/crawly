@@ -8,12 +8,12 @@ A Java-based web crawler for downloading websites to browse offline.
 
 - Connect to and parse websites using JSoup
 - Download HTML content to local files
+- Recursive crawling
 
 ## Planned Features
 
 - Download and save images locally
 - Rewrite URLs in HTML to point to local files
-- Recursive crawling
 - Configurable crawl depth
 - GUI
 
