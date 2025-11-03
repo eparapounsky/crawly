@@ -2,6 +2,10 @@ package com.spyder.main;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+import java.util.HashSet;
 
 public class Crawler {
 
@@ -17,8 +21,35 @@ public class Crawler {
 
     public void crawl() {
         try {
-            Document webpage = Jsoup.connect(this.url).get(); // store parsed html
+            HashSet<String> visitedURLS = new HashSet<>();
+
+            crawlHelper(url, visitedURLS);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void crawlHelper(String url, HashSet<String> visitedUrls) {
+        try {
+            Document webpage = Jsoup.connect(url).get(); // store parsed html
             downloader.download(webpage);
+
+            visitedUrls.add(url);
+
+            // collect all links in current page
+            Elements links = webpage.select("a[href]");
+
+            if (links.isEmpty()) {
+                return;
+            }
+
+            for (Element link : links) {
+                if (visitedUrls.contains(link.attr("abs:href"))) {
+                    continue;
+                }
+                crawlHelper(link.attr("abs:href"), visitedUrls);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
