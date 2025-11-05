@@ -18,5 +18,8 @@ target/
 *.html
 output/
 
-# IDE lock files
+### IDE lock files ###
 .LCK*
+
+### Test Files ###
+*.jpg
