@@ -17,3 +17,6 @@ target/
 ### Generated Files ###
 *.html
 output/
+
+# IDE lock files
+.LCK*
