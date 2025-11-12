@@ -7,10 +7,10 @@ import java.io.FileWriter;
 public class Downloader {
 
     public void download(Document webpage) {
-        try {
-            FileWriter myWriter = new FileWriter(webpage.title() + ".html");
+        String filename = webpage.title().replace(".", "");
+
+        try (FileWriter myWriter = new FileWriter(filename + ".html")) {
             myWriter.write(webpage.html());  // write entire html doc
-            myWriter.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
