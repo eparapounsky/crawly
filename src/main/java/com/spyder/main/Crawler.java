@@ -11,12 +11,10 @@ import java.net.URI;
 public class Crawler {
 
     private final String url;
-    private String saveLocation;
     private final Downloader downloader;
 
     public Crawler(String url, String saveLocation, Downloader downloader) {
         this.url = url;
-        this.saveLocation = saveLocation;
         this.downloader = downloader;
     }
 
