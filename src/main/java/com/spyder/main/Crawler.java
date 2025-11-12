@@ -13,7 +13,7 @@ public class Crawler {
     private final String url;
     private final Downloader downloader;
 
-    public Crawler(String url, String saveLocation, Downloader downloader) {
+    public Crawler(String url, Downloader downloader) {
         this.url = url;
         this.downloader = downloader;
     }
