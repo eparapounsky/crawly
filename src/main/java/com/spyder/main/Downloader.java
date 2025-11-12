@@ -5,6 +5,11 @@ import org.jsoup.nodes.Document;
 import java.io.FileWriter;
 
 public class Downloader {
+    private final String saveLocation;
+
+    public Downloader(String saveLocation) {
+        this.saveLocation = saveLocation;
+    }
 
     public void download(Document webpage) {
         String filename = webpage.title().replace(".", "");
