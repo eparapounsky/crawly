@@ -25,12 +25,17 @@ public class Downloader {
             System.err.println("Error creating nested directories: " + e.getMessage());
         }
 
-        String filename = webpage.title().replace(".", "");
+        String filename = sanitizeFilename(webpage.title());
 
         try (FileWriter myWriter = new FileWriter(filename + ".html")) {
             myWriter.write(webpage.html());  // write entire html doc
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private String sanitizeFilename(String filename) {
+        String sanitized = filename.replace(".", "").replace("!", "").replace("?", "").replace("", "").replace(":", "-");
+        return sanitized;
     }
 }
