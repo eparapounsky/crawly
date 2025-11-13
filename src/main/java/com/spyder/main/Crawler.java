@@ -32,7 +32,7 @@ public class Crawler {
     private void crawlHelper(String url, HashSet<String> visitedUrls) {
         try {
             Document webpage = Jsoup.connect(url).get(); // store parsed html
-            downloader.download(webpage);
+            downloader.download(webpage, url);
 
             visitedUrls.add(url);
 
