@@ -2,6 +2,7 @@ package com.spyder.main;
 
 import org.jsoup.nodes.Document;
 
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -19,23 +20,25 @@ public class Downloader {
     public void download(Document webpage) {
         // create output directory if it doesn't exist
         try {
-            Path filepath = Paths.get(saveLocation);
-            Files.createDirectories(filepath);
+            Path outputFilepath = Paths.get(saveLocation);
+            Files.createDirectories(outputFilepath);
         } catch (IOException e) {
             System.err.println("Error creating nested directories: " + e.getMessage());
         }
 
-        String filename = sanitizeFilename(webpage.title());
+        String pageTitle = sanitizePageTitle(webpage.title());
+        String filename = saveLocation + File.separator + pageTitle + ".html"; // File.separator for platform independent filepath
 
-        try (FileWriter myWriter = new FileWriter(filename + ".html")) {
-            myWriter.write(webpage.html());  // write entire html doc
-        } catch (Exception e) {
-            e.printStackTrace();
+        // write entire page html to filepath specified by filename
+        try (FileWriter myWriter = new FileWriter(filename)) {
+            myWriter.write(webpage.html());
+        } catch (IOException e) {
+            System.err.println("Error writing webpage to file: " + e.getMessage());
         }
     }
 
-    private String sanitizeFilename(String filename) {
-        String sanitized = filename.replace(".", "").replace("!", "").replace("?", "").replace("", "").replace(":", "-");
+    private String sanitizePageTitle(String filename) {
+        String sanitized = filename.replace(".", "").replace("!", "").replace("?", "").replace("", "").replace(":", "-").replace("|", "").trim();
         return sanitized;
     }
 }
