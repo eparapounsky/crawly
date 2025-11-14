@@ -12,12 +12,10 @@ public class Crawler {
 
     private final String url;
     private final Downloader downloader;
-    private final String saveLocation;
 
-    public Crawler(String url, Downloader downloader, String saveLocation) {
+    public Crawler(String url, Downloader downloader) {
         this.url = url;
         this.downloader = downloader;
-        this.saveLocation = saveLocation;
     }
 
     public void crawl() {
@@ -35,17 +33,10 @@ public class Crawler {
         try {
             Document webpage = Jsoup.connect(url).get(); // store parsed html
             downloader.download(webpage, url);
-
             visitedUrls.add(url);
 
             // collect all links in current page
             Elements links = webpage.select("a[href]");
-
-            // collect all images in current page
-            Elements images = webpage.select("img");
-            for (Element img : images) {
-                saveImage(url, saveLocation, img);
-            }
 
             if (links.isEmpty()) {
                 return;
@@ -80,4 +71,5 @@ public class Crawler {
             e.printStackTrace();
         }
     }
+
 }
