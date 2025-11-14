@@ -1,14 +1,19 @@
 package com.spyder.main;
 
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.InvalidPathException;
+import java.nio.file.StandardCopyOption;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
 
 public class Downloader {
 
@@ -69,6 +74,9 @@ public class Downloader {
             System.err.println("Error creating nested directories: " + e.getMessage());
         }
 
+        // download images and update their urls in the html before writing the html file
+        downloadImages(webpage, rootDirectory, relativePath);
+
         // write entire current page html to filepath specified by fullFilePath
         try (FileWriter myWriter = new FileWriter(fullFilePath)) {
             myWriter.write(webpage.html());
@@ -104,7 +112,80 @@ public class Downloader {
 
             return relativeUrlPath;
         } catch (Exception e) {
-            return "/";
+            return "/"; // on error, default to root path (best effort)
+        }
+    }
+
+    private void downloadImages(Document webpage, String rootDirectory, String currentPagePath) {
+        // collect all images in current page
+        Elements images = webpage.select("img");
+
+        // create images directory at root level (or do nothing if directory exists)
+        String imagesDirectory = rootDirectory + File.separator + "images";
+        try {
+            Files.createDirectories(Paths.get(imagesDirectory));
+        } catch (IOException e) {
+            System.err.println("Error creating images directory: " + e.getMessage());
+            return;
+        }
+
+        // download each image and update its url in the html
+        for (Element img : images) {
+            try {
+                // get absolute url (src is relative by default) and we need absolute to download
+                String imageAbsoluteUrl = img.attr("abs:src");
+                if (imageAbsoluteUrl == null || imageAbsoluteUrl.isEmpty()) {
+                    continue;
+                }
+
+                // extract filename from the image url
+                String imageFileName = createImageFileName(imageAbsoluteUrl);
+                String imageFilePath = imagesDirectory + File.separator + imageFileName;
+
+                // download the image
+                URI imageUri = new URI(imageAbsoluteUrl); // convert to uri to open network stream
+                try (InputStream in = imageUri.toURL().openStream()) {
+                    Files.copy(in, Paths.get(imageFilePath), StandardCopyOption.REPLACE_EXISTING);
+                }
+
+                // update the image src in the html to use relative path so it works locally
+                String relativeImagePath = calculateRelativePath(currentPagePath, "images/" + imageFileName);
+                img.attr("src", relativeImagePath);
+
+            } catch (Exception e) {
+                System.err.println("Error downloading image: " + e.getMessage());
+            }
+        }
+    }
+
+    private String createImageFileName(String imageUrl) {
+        try {
+            // extract original filename from image url
+            String imagePath = new URI(imageUrl).getPath(); // convert to url so we can parse path
+            String originalFileName = imagePath.substring(imagePath.lastIndexOf('/') + 1); // extract after last "/"
+            return originalFileName;
+        } catch (Exception e) {
+            return "image.jpg"; // fallback to default filename
+        }
+    }
+
+    // calculates the relative path from the current page to the target file
+    // this ensures images can be referenced correctly regardless of page depth
+    private String calculateRelativePath(String fromPath, String toPath) {
+        try {
+            // convert paths to Path objects using forward slashes (web standard)
+            Path from = Paths.get(fromPath).getParent();
+            if (from == null) {
+                from = Paths.get("");  // root level
+            }
+            Path to = Paths.get(toPath);
+
+            // calculate relative path and convert to forward slashes for html
+            Path relativePath = from.relativize(to);
+            return relativePath.toString().replace(File.separator, "/");
+        } catch (Exception e) {
+            // fallback: return simple path from root if path operations fail
+            return toPath;
         }
     }
 }
