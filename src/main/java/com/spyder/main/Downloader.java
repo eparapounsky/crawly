@@ -35,9 +35,9 @@ public class Downloader {
             // if path has no extension (.html, .jpg), append index.html (for directory paths)
             // ex: when you visit http://example.com/about, the server is actually serving http://example.com/about/index.html
             // handle both cases: with or without trailing slash (ensure proper path separation)
-            if (relativePath.endsWith("/")) { 
+            if (relativePath.endsWith("/")) {
                 relativePath = relativePath + "index.html";
-            } else { 
+            } else {
                 relativePath = relativePath + "/index.html";
             }
         }
@@ -48,27 +48,28 @@ public class Downloader {
         }
 
         // include site name as top level directory if given to organize by site
-        String basePath = saveLocation;
+        String rootDirectory = saveLocation;
         if (siteName != null && !siteName.isEmpty()) {
-            basePath = basePath + File.separator + siteName;
+            rootDirectory = rootDirectory + File.separator + siteName;
         }
 
         // build full file path that preserves directory structure from url
-        String fullPath = basePath + File.separator + relativePath.replace("/", File.separator);
+        // replace forward slashes with file separator to maintain directory structure
+        String fullFilePath = rootDirectory + File.separator + relativePath.replace("/", File.separator);
 
-        // create output directory if it doesn't exist
-        // include all nested directories before writing file
+        // for all parent directories of current file path, create them if they don't exist
+        // this creates any nested directories needed before writing the file
         try {
-            Path outputFilepath = Paths.get(fullPath).getParent(); // ensure all parent directories are created
-            if (outputFilepath != null) {
-                Files.createDirectories(outputFilepath); // create nested directories
+            Path parentDirectoryPath = Paths.get(fullFilePath).getParent();
+            if (parentDirectoryPath != null) {
+                Files.createDirectories(parentDirectoryPath);
             }
         } catch (IOException e) {
             System.err.println("Error creating nested directories: " + e.getMessage());
         }
 
-        // write entire page html to filepath specified by fullPath
-        try (FileWriter myWriter = new FileWriter(fullPath)) {
+        // write entire current page html to filepath specified by fullFilePath
+        try (FileWriter myWriter = new FileWriter(fullFilePath)) {
             myWriter.write(webpage.html());
         } catch (IOException e) {
             System.err.println("Error writing webpage to file: " + e.getMessage());
