@@ -6,6 +6,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.InvalidPathException;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -64,7 +65,7 @@ public class Downloader {
             if (parentDirectoryPath != null) {
                 Files.createDirectories(parentDirectoryPath);
             }
-        } catch (IOException e) {
+        } catch (IOException | InvalidPathException e) {
             System.err.println("Error creating nested directories: " + e.getMessage());
         }
 
