@@ -7,7 +7,7 @@ public class Crawly {
         // String url = "C:\\git\\Crawly\\input\\site1\\index.html";
         String saveLocation = "./output";
         Downloader downloader = new Downloader(saveLocation); // create the dependency
-        Crawler crawler = new Crawler(url, downloader, saveLocation); // inject dependency
+        Crawler crawler = new Crawler(url, downloader); // inject dependency
         crawler.crawl();
     }
 }
