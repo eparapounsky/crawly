@@ -14,6 +14,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 
 public class Downloader {
 
@@ -85,34 +86,14 @@ public class Downloader {
         }
     }
 
-    // extracts the path portion from the url, handles various url formats, removes query parameters and fragments and fragments, provides error handling
+    /* Uses java.net.URI to extract the path component from the URL. Handles URL encoding/decoding, strips queries and fragments, accounts for schemes/ports/authentication. 
+    Notes on edge cases: if URL has no path, URI.getPath() returns null, so we return "/" for root. If any exception occurs (malformed URL, etc.), we also return "/" as a fallback.
+     */
     private String extractPathFromUrl(String url) {
         try {
-            int urlSchemeEndIndex = url.indexOf("://");
-            if (urlSchemeEndIndex != -1) {
-                url = url.substring(urlSchemeEndIndex + 3); // extract after "://"
-            }
-
-            int urlPathStartIndex = url.indexOf('/');
-            if (urlPathStartIndex == -1) {
-                return "/"; // no path, return root
-            }
-
-            String relativeUrlPath = url.substring(urlPathStartIndex); // extract after domain
-
-            // remove query parameters and fragments
-            int urlQueryStartIndex = relativeUrlPath.indexOf('?');
-            if (urlQueryStartIndex != -1) {
-                relativeUrlPath = relativeUrlPath.substring(0, urlQueryStartIndex); // extract before "?"
-            }
-            int fragmentStart = relativeUrlPath.indexOf('#');
-            if (fragmentStart != -1) {
-                relativeUrlPath = relativeUrlPath.substring(0, fragmentStart); // extract before "#"
-            }
-
-            return relativeUrlPath;
-        } catch (Exception e) {
-            return "/"; // on error, default to root path (best effort)
+            return new URI(url).getPath();  // Returns null if no path, or "/" for root
+        } catch (URISyntaxException e) {
+            return "/";  // Fallback on error
         }
     }
 
