@@ -87,13 +87,13 @@ public class Downloader {
     }
 
     /* Uses java.net.URI to extract the path component from the URL. Handles URL encoding/decoding, strips queries and fragments, accounts for schemes/ports/authentication. 
-    Notes on edge cases: if URL has no path, URI.getPath() returns null, so we return "/" for root. If any exception occurs (malformed URL, etc.), we also return "/" as a fallback.
+    Notes on edge cases: if URL has no path, returns null, so we return "/" for root. If any exception occurs (malformed URL, etc.), we also return "/" as a fallback.
      */
     private String extractPathFromUrl(String url) {
         try {
-            return new URI(url).getPath();  // Returns null if no path, or "/" for root
+            return new URI(url).getPath();  // returns null if no path, or "/" for root
         } catch (URISyntaxException e) {
-            return "/";  // Fallback on error
+            return "/";  // fallback
         }
     }
 
@@ -123,15 +123,18 @@ public class Downloader {
                 String imageFileName = createImageFileName(imageAbsoluteUrl);
                 String imageFilePath = imagesDirectory + File.separator + imageFileName;
 
-                // download the image
+                // download the image:
+                // imageUri.toURL.openStream converts URI to URL (since URI doesn't have openStream method) and opens a network connection to the image url ...
+                // ... it returns an InputStream we can read from to get image data.
+                // Files.copy copies all bytes from InputStream to a file at imageFilePath, replacing existing file if it exists
                 URI imageUri = new URI(imageAbsoluteUrl); // convert to uri to open network stream
-                try (InputStream in = imageUri.toURL().openStream()) {
-                    Files.copy(in, Paths.get(imageFilePath), StandardCopyOption.REPLACE_EXISTING);
+                try (InputStream imageInputStream = imageUri.toURL().openStream()) {
+                    Files.copy(imageInputStream, Paths.get(imageFilePath), StandardCopyOption.REPLACE_EXISTING);
                 }
 
-                // update the image src in the html to use relative path so it works locally
-                String relativeImagePath = calculateRelativePath(currentPagePath, "images/" + imageFileName);
-                img.attr("src", relativeImagePath);
+                // update the image src in the html so it works locally
+                String relativeImagePath = calculateRelativePath(currentPagePath, "images/" + imageFileName); // get relative path from current page to image file
+                img.attr("src", relativeImagePath); // update src attribute to relative path
 
             } catch (Exception e) {
                 System.err.println("Error downloading image: " + e.getMessage());
@@ -142,31 +145,31 @@ public class Downloader {
     private String createImageFileName(String imageUrl) {
         try {
             // extract original filename from image url
-            String imagePath = new URI(imageUrl).getPath(); // convert to url so we can parse path
+            String imagePath = new URI(imageUrl).getPath(); // convert to url so we can automatically parse path
             String originalFileName = imagePath.substring(imagePath.lastIndexOf('/') + 1); // extract after last "/"
             return originalFileName;
-        } catch (Exception e) {
+        } catch (URISyntaxException e) {
             return "image.jpg"; // fallback to default filename
         }
     }
 
-    // calculates the relative path from the current page to the target file
+    // calculates the relative path from the current html page to the destination path
     // this ensures images can be referenced correctly regardless of page depth
-    private String calculateRelativePath(String fromPath, String toPath) {
+    private String calculateRelativePath(String sourcePath, String destinationPath) {
         try {
-            // convert paths to Path objects using forward slashes (web standard)
-            Path from = Paths.get(fromPath).getParent();
+            // convert path strings to Path objects to get parent directories for current page
+            Path from = Paths.get(sourcePath).getParent();
             if (from == null) {
-                from = Paths.get("");  // root level
+                from = Paths.get(""); // empty path (root directory)
             }
-            Path to = Paths.get(toPath);
+            Path to = Paths.get(destinationPath);
 
-            // calculate relative path and convert to forward slashes for html
+            // calculate relative path and convert to forward slashes for html (Windows compatibility)
             Path relativePath = from.relativize(to);
             return relativePath.toString().replace(File.separator, "/");
         } catch (Exception e) {
             // fallback: return simple path from root if path operations fail
-            return toPath;
+            return destinationPath;
         }
     }
 }
