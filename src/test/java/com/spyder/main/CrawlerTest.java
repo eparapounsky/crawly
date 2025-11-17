@@ -1,7 +1,6 @@
 package com.spyder.main;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.HashSet;
 import java.util.Set;
@@ -23,16 +22,12 @@ public class CrawlerTest {
     private static HttpServer server = null;
 
     @BeforeAll
-    public static void setup() {
+    public static void setup() throws Exception {
 
-        try {
-            server = HttpServer.create(new InetSocketAddress(TEST_PORT), 0);
-            server.createContext("/", new MyHttpServerHandler()); // set handler to serve files from input directory
-            server.start();
-        } catch (IOException e) {
-            // TO-DO: auto-generated catch block
-            e.printStackTrace();
-        }
+        server = HttpServer.create(new InetSocketAddress(TEST_PORT), 0);
+        server.createContext("/", new MyHttpServerHandler()); // set handler to serve files from input directory
+        server.start();
+
         // set input and output directories
         inputFile = new File("./input/index.html");
         System.out.println("Testing input at: " + inputFile.getAbsolutePath());
