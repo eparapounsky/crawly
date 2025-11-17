@@ -32,6 +32,12 @@ public class Utils {
 
     // recursively delete a directory and its contents
     public static void deleteDirectory(File directory) {
+        // safety check: prevent accidental deletion of external files
+        String currentDirectory = System.getProperty("user.dir");
+        if (!directory.getAbsolutePath().startsWith(currentDirectory)) {
+            System.err.println("WARNING: Attempted to delete directory outside workspace: " + directory.getAbsolutePath());
+        }
+
         File[] files = directory.listFiles();
         if (files == null) {
             return;
