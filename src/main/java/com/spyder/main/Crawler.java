@@ -1,12 +1,12 @@
 package com.spyder.main;
 
+import java.net.URI;
+import java.util.HashSet;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-
-import java.util.HashSet;
-import java.net.URI;
 
 public class Crawler {
 
