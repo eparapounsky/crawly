@@ -2,6 +2,8 @@ package com.spyder.main;
 
 import java.net.URI;
 import java.util.HashSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -12,6 +14,7 @@ public class Crawler {
 
     private final String url;
     private final Downloader downloader;
+    private static final Logger logger = Logger.getLogger(Crawler.class.getName());
 
     public Crawler(String url, Downloader downloader) {
         this.url = url;
@@ -20,10 +23,8 @@ public class Crawler {
 
     public void crawl() {
         try {
-            HashSet<String> visitedURLS = new HashSet<>();
-
-            crawlHelper(url, visitedURLS);
-
+            HashSet<String> visitedUrls = new HashSet<>();
+            crawlHelper(url, visitedUrls);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -31,6 +32,8 @@ public class Crawler {
 
     private void crawlHelper(String url, HashSet<String> visitedUrls) {
         try {
+            logger.log(Level.INFO, "Started crawling webpage: {0}", url);
+
             Document webpage = Jsoup.connect(url).get(); // store parsed html
             downloader.download(webpage, url);
             visitedUrls.add(url);
@@ -39,6 +42,7 @@ public class Crawler {
             Elements links = webpage.select("a[href]");
 
             if (links.isEmpty()) {
+                logger.log(Level.FINE, "No links found on current page: {0}", url);
                 return;
             }
 
@@ -47,6 +51,7 @@ public class Crawler {
 
                 // prevent null or empty links
                 if (currentLink == null || currentLink.isEmpty()) {
+                    logger.log(Level.FINE, "Encountered null or empty link on currentpage: {0}", currentLink);
                     continue;
                 }
 
@@ -58,13 +63,13 @@ public class Crawler {
                 // do not follow external links
                 URI currentUri = new URI(currentLink);
                 String currentDomain = currentUri.getHost();
-
                 URI baseUri = new URI(this.url);
                 String originalDomain = baseUri.getHost();
                 if (!currentDomain.equals(originalDomain)) {
+                    logger.log(Level.FINE, "Skipping external link: {0}", currentLink);
                     continue;
                 }
-
+                // recursive crawl
                 crawlHelper(currentLink, visitedUrls);
             }
         } catch (Exception e) {
