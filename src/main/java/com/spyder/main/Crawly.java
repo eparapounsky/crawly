@@ -13,7 +13,8 @@ public class Crawly {
         String url = "https://toscrape.com/";
         String saveLocation = "./output";
 
-        logger.log(Level.INFO, "Initializing Crawly with URL: {0} and Save Location: {1}", new Object[]{url, saveLocation});
+        logger.log(Level.INFO, "Initializing Crawly with URL: {0} and Save Location: {1}",
+                new Object[] { url, saveLocation });
 
         try {
             Downloader downloader = new Downloader(saveLocation); // create the dependency
