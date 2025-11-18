@@ -39,7 +39,8 @@ public class CrawlerTest {
         outputDirectory = new File("./outputTest");
         outputDirectory.mkdirs();
         Utils.deleteDirectory(outputDirectory); // clean in case test was killed and coudn't clean in @AfterAll
-        Assertions.assertTrue(outputDirectory.exists(), inputFile.getAbsolutePath() + "Failed to create output directory!");
+        Assertions.assertTrue(outputDirectory.exists(),
+                inputFile.getAbsolutePath() + "Failed to create output directory!");
     }
 
     @AfterAll
