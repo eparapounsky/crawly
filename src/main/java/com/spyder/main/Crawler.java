@@ -1,6 +1,8 @@
 package com.spyder.main;
 
+import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,7 +28,8 @@ public class Crawler {
             HashSet<String> visitedUrls = new HashSet<>();
             crawlHelper(url, visitedUrls);
         } catch (Exception e) {
-            e.printStackTrace();
+            // use concatenation to include exception message
+            logger.log(Level.SEVERE, "Failed to start crawling from: " + url, e);
         }
     }
 
@@ -72,8 +75,8 @@ public class Crawler {
                 // recursive crawl
                 crawlHelper(currentLink, visitedUrls);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException | URISyntaxException e) {
+            logger.log(Level.WARNING, "Failed to crawl page: " + url + " - continuing with other pages", e);
         }
     }
 
