@@ -1,4 +1,4 @@
-package com.spyder.main;
+package com.spyder.test;
 
 import java.io.File;
 import java.net.InetSocketAddress;
@@ -11,6 +11,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import com.spyder.main.Crawler;
+import com.spyder.main.Downloader;
+import com.spyder.main.Utils;
 import com.sun.net.httpserver.HttpServer;
 
 public class CrawlerTest {
