@@ -1,11 +1,11 @@
 package com.spyder.main;
 
 import java.io.IOException;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -16,7 +16,7 @@ public class Crawler {
 
     private final String url;
     private final Downloader downloader;
-    private static final Logger logger = Logger.getLogger(Crawler.class.getName());
+    private static final Logger logger = System.getLogger(Crawler.class.getName());
 
     public Crawler(String url, Downloader downloader) {
         this.url = url;
@@ -29,7 +29,7 @@ public class Crawler {
             crawlHelper(url, visitedUrls);
         } catch (Exception e) {
             // use concatenation to include exception message
-            logger.log(Level.SEVERE, "Failed to start crawling from: " + url, e);
+            logger.log(Level.ERROR, "Failed to start crawling from: " + url, e);
         }
     }
 
@@ -45,7 +45,7 @@ public class Crawler {
             Elements links = webpage.select("a[href]");
 
             if (links.isEmpty()) {
-                logger.log(Level.FINE, "No links found on current page: {0}", url);
+                logger.log(Level.DEBUG, "No links found on current page: {0}", url);
                 return;
             }
 
@@ -54,7 +54,7 @@ public class Crawler {
 
                 // prevent null or empty links
                 if (currentLink == null || currentLink.isEmpty()) {
-                    logger.log(Level.FINE, "Encountered null or empty link on currentpage: {0}", currentLink);
+                    logger.log(Level.DEBUG, "Encountered null or empty link on currentpage: {0}", currentLink);
                     continue;
                 }
 
@@ -69,7 +69,7 @@ public class Crawler {
                 URI baseUri = new URI(this.url);
                 String originalDomain = baseUri.getHost();
                 if (!currentDomain.equals(originalDomain)) {
-                    logger.log(Level.FINE, "Skipping external link: {0}", currentLink);
+                    logger.log(Level.DEBUG, "Skipping external link: {0}", currentLink);
                     continue;
                 }
                 // recursive crawl
