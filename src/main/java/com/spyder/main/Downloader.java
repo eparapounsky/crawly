@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.System.Logger;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
@@ -11,7 +12,6 @@ import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.logging.Logger;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -20,25 +20,26 @@ import org.jsoup.select.Elements;
 public class Downloader {
 
     private final String saveLocation;
-    private static final Logger logger = Logger.getLogger(Downloader.class.getName());
+    private static final Logger logger = System.getLogger(Downloader.class.getName());
 
     public Downloader(String saveLocation) {
         this.saveLocation = saveLocation;
     }
 
     public void download(Document webpage, String url) {
-        // get relative path to file within save location, so we can preserve directory
-        // structure
-        String relativePath = getRelativePath(url);
+        // Derive a relative file path from the URL.
+        // (e.g. "/" -> index.html, "/about" -> about/index.html)
+        String relativeFilePath = getRelativePath(url);
 
-        // build full file path that preserves directory structure from url
-        // replace forward slashes with file separator to maintain directory structure
-        String fullFilePath = saveLocation + File.separator + relativePath.replace("/", File.separator);
+        // Build the full file path that preserves the directory structure of the URL.
+        // Replace / with \ on Windows.
+        // TO-DO: Replace with Path API (safer for file operations)
+        String absoluteFilePath = saveLocation + File.separator + relativeFilePath.replace("/", File.separator);
 
-        // for all parent directories of current file, create them if they don't exist
-        // this creates any nested directories needed before writing the file
+        // Ensure the parent directories for the target file exist, creating any nested
+        // directories needed to mirror the URL path before writing the file.
         try {
-            Path parentDirectoryPath = Paths.get(fullFilePath).getParent();
+            Path parentDirectoryPath = Paths.get(absoluteFilePath).getParent();
             if (parentDirectoryPath != null) {
                 Files.createDirectories(parentDirectoryPath);
             }
@@ -46,11 +47,12 @@ public class Downloader {
             System.err.println("Error creating nested directories: " + e.getMessage());
         }
 
-        // download images & update their urls in the html before writing the html file
-        downloadImages(webpage, saveLocation, relativePath);
+        // Download all images in the webpage, and update their src attributes to point
+        // to the local copies, before writing the HTML file.
+        downloadImages(webpage, saveLocation, relativeFilePath);
 
-        // write entire current page html to filepath specified by fullFilePath
-        try (FileWriter myWriter = new FileWriter(fullFilePath)) {
+        // Write the modified HTML content (with updated image paths) to the file.
+        try (FileWriter myWriter = new FileWriter(absoluteFilePath)) {
             myWriter.write(webpage.html());
         } catch (IOException e) {
             System.err.println("Error writing webpage to file: " + e.getMessage());
