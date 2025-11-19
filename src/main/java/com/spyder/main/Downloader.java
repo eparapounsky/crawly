@@ -11,6 +11,7 @@ import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.logging.Logger;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -19,23 +20,47 @@ import org.jsoup.select.Elements;
 public class Downloader {
 
     private final String saveLocation;
-    private final String siteName; // for top-level directory (organizing downloaded files by site)
+    private static final Logger logger = Logger.getLogger(Downloader.class.getName());
 
-    // for cases where siteName is not provided
     public Downloader(String saveLocation) {
-        this(saveLocation, null);
-    }
-
-    // for cases where siteName is provided - organize downloads by site
-    public Downloader(String saveLocation, String siteName) {
         this.saveLocation = saveLocation;
-        this.siteName = siteName;
     }
 
-    // pass url to give method access to path information
     public void download(Document webpage, String url) {
+        // get relative path to file within save location, so we can preserve directory
+        // structure
+        String relativePath = getRelativePath(url);
+
+        // build full file path that preserves directory structure from url
+        // replace forward slashes with file separator to maintain directory structure
+        String fullFilePath = saveLocation + File.separator + relativePath.replace("/", File.separator);
+
+        // for all parent directories of current file, create them if they don't exist
+        // this creates any nested directories needed before writing the file
+        try {
+            Path parentDirectoryPath = Paths.get(fullFilePath).getParent();
+            if (parentDirectoryPath != null) {
+                Files.createDirectories(parentDirectoryPath);
+            }
+        } catch (IOException | InvalidPathException e) {
+            System.err.println("Error creating nested directories: " + e.getMessage());
+        }
+
+        // download images & update their urls in the html before writing the html file
+        downloadImages(webpage, saveLocation, relativePath);
+
+        // write entire current page html to filepath specified by fullFilePath
+        try (FileWriter myWriter = new FileWriter(fullFilePath)) {
+            myWriter.write(webpage.html());
+        } catch (IOException e) {
+            System.err.println("Error writing webpage to file: " + e.getMessage());
+        }
+    }
+
+    private String getRelativePath(String url) {
         // use path from url to determine file path within save location
         String relativePath = extractPathFromUrl(url);
+
         if (relativePath.equals("/")) {
             relativePath = "index.html"; // if root path, save as index.html
         } else if (!relativePath.endsWith(".html") && !relativePath.contains(".")) {
@@ -52,44 +77,11 @@ public class Downloader {
             }
         }
 
-        // remove leading slash to make it a relative path (avoid double slashes in file
-        // path)
+        // remove leading slash to make it a relative path (avoid // in file path)
         if (relativePath.startsWith("/")) {
             relativePath = relativePath.substring(1);
         }
-
-        // include site name as top level directory if given to organize by site
-        String rootDirectory = saveLocation;
-        if (siteName != null && !siteName.isEmpty()) {
-            rootDirectory = rootDirectory + File.separator + siteName;
-        }
-
-        // build full file path that preserves directory structure from url
-        // replace forward slashes with file separator to maintain directory structure
-        String fullFilePath = rootDirectory + File.separator + relativePath.replace("/", File.separator);
-
-        // for all parent directories of current file path, create them if they don't
-        // exist
-        // this creates any nested directories needed before writing the file
-        try {
-            Path parentDirectoryPath = Paths.get(fullFilePath).getParent();
-            if (parentDirectoryPath != null) {
-                Files.createDirectories(parentDirectoryPath);
-            }
-        } catch (IOException | InvalidPathException e) {
-            System.err.println("Error creating nested directories: " + e.getMessage());
-        }
-
-        // download images and update their urls in the html before writing the html
-        // file
-        downloadImages(webpage, rootDirectory, relativePath);
-
-        // write entire current page html to filepath specified by fullFilePath
-        try (FileWriter myWriter = new FileWriter(fullFilePath)) {
-            myWriter.write(webpage.html());
-        } catch (IOException e) {
-            System.err.println("Error writing webpage to file: " + e.getMessage());
-        }
+        return relativePath;
     }
 
     /*
