@@ -76,7 +76,7 @@ public class Crawler {
                 crawlHelper(currentLink, visitedUrls);
             }
         } catch (IOException | URISyntaxException e) {
-            logger.log(Level.WARNING, "Failed to crawl page: " + url + " - continuing with other pages", e);
+            logger.log(Level.WARNING, "Failed to crawl page: {0} - continuing with other pages", url, e);
         }
     }
 
