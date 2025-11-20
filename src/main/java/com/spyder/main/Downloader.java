@@ -22,6 +22,11 @@ public class Downloader {
 
     private final String saveLocation;
     private static final Logger logger = System.getLogger(Downloader.class.getName());
+    private final static String IMAGES_FOLDER_NAME = "bugs";
+
+    public static String getImagesFolderName() {
+        return IMAGES_FOLDER_NAME;
+    }
 
     public Downloader(String saveLocation) {
         // Ensure path is syntactically valid before assigning
@@ -118,7 +123,7 @@ public class Downloader {
         Elements images = webpage.select("img");
 
         // Create the images directory at the root level (or do nothing if it exists).
-        String imagesDirectory = rootDirectory + File.separator + "images";
+        String imagesDirectory = rootDirectory + File.separator + IMAGES_FOLDER_NAME;
         try {
             Files.createDirectories(Paths.get(imagesDirectory));
         } catch (IOException e) {
@@ -156,7 +161,7 @@ public class Downloader {
             }
 
             // Update the src attribute of the image in the HTML using new relative path.
-            String relativeImagePath = calculateRelativePath(currentPagePath, "images/" + imageFileName);
+            String relativeImagePath = calculateRelativePath(currentPagePath, IMAGES_FOLDER_NAME + imageFileName);
             img.attr("src", relativeImagePath);
         }
     }
