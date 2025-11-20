@@ -12,7 +12,8 @@ import java.net.URL;
 public class Utils {
 
     public static void downloadFile(String fileURL, String savePath) throws IOException {
-        // use URI constructor for strict validation, then convert to URL to catch malformed URLs early
+        // use URI constructor for strict validation, then convert to URL to catch
+        // malformed URLs early
         URL url;
         try {
             url = new URI(fileURL).toURL();
@@ -21,7 +22,8 @@ public class Utils {
         }
 
         // try with resources to write data to file
-        try (BufferedInputStream in = new BufferedInputStream(url.openStream()); FileOutputStream fileOutputStream = new FileOutputStream(savePath)) {
+        try (BufferedInputStream in = new BufferedInputStream(url.openStream());
+                FileOutputStream fileOutputStream = new FileOutputStream(savePath)) {
             byte[] dataBuffer = new byte[1024];
             int bytesRead;
             while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
@@ -35,7 +37,8 @@ public class Utils {
         // safety check: prevent accidental deletion of external files
         String currentDirectory = System.getProperty("user.dir");
         if (!directory.getAbsolutePath().startsWith(currentDirectory)) {
-            System.err.println("WARNING: Attempted to delete directory outside workspace: " + directory.getAbsolutePath());
+            System.err.println(
+                    "WARNING: Attempted to delete directory outside workspace: " + directory.getAbsolutePath());
         }
 
         File[] files = directory.listFiles();
@@ -95,6 +98,22 @@ public class Utils {
         } catch (URISyntaxException | IllegalArgumentException | MalformedURLException e) {
             // fallback: simple string analysis
             return urlString.matches(".*\\.[a-zA-Z0-9]{2,6}(?:[?#]|$)");
+        }
+    }
+
+    public static boolean isValidUrl(String urlString) {
+        // basic null/empty check
+        if (urlString == null || urlString.trim().isEmpty()) {
+            return false;
+        }
+
+        // use URI constructor for strict validation, then convert to URL to catch
+        // malformed URLs early
+        try {
+            new URI(urlString).toURL();
+            return true;
+        } catch (URISyntaxException | MalformedURLException e) {
+            return false;
         }
     }
 }
