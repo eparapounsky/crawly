@@ -17,6 +17,7 @@ public class Crawler {
     private final String url;
     private final Downloader downloader;
     private static final Logger logger = System.getLogger(Crawler.class.getName());
+    private static final int MAX_CRAWL_DEPTH = 10;
 
     public Crawler(String url, Downloader downloader) {
         // Validate URL format before assignment
@@ -31,16 +32,23 @@ public class Crawler {
     public void crawl() {
         try {
             HashSet<String> visitedUrls = new HashSet<>();
-            crawlHelper(url, visitedUrls);
+
+            crawlHelper(url, visitedUrls, MAX_CRAWL_DEPTH);
         } catch (Exception e) {
             // use concatenation to include exception message
             logger.log(Level.ERROR, "Failed to start crawling from: " + url, e);
         }
     }
 
-    private void crawlHelper(String url, HashSet<String> visitedUrls) {
+    private void crawlHelper(String url, HashSet<String> visitedUrls, int maxDepth) {
+        // Check depth limit
+        if (maxDepth <= 0) {
+            logger.log(Level.DEBUG, "Reached maximum depth, stopping crawl at: {0}", url);
+            return;
+        }
+
         try {
-            logger.log(Level.INFO, "Started crawling webpage: {0}", url);
+            logger.log(Level.DEBUG, "Started crawling webpage: {0}", url);
 
             Document webpage = Jsoup.connect(url).get(); // store parsed html
             downloader.download(webpage, url);
@@ -77,8 +85,8 @@ public class Crawler {
                     logger.log(Level.DEBUG, "Skipping external link: {0}", currentLink);
                     continue;
                 }
-                // recursive crawl
-                crawlHelper(currentLink, visitedUrls);
+                // recursive crawl with decremented depth
+                crawlHelper(currentLink, visitedUrls, maxDepth - 1);
             }
         } catch (IOException | URISyntaxException e) {
             logger.log(Level.WARNING, "Failed to crawl page: {0} - continuing with other pages", url, e);
