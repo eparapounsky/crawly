@@ -11,39 +11,24 @@ public class Crawly {
     public static void main(String[] args) {
         logger.log(Level.INFO, "Started Crawly");
 
-        // Get user input.
+        // Get user input
         String url;
         String saveLocation;
 
-        if (args.length > 0) {
-            // command line mode
-            url = args[0];
-            saveLocation = args[1];
-            logger.log(Level.INFO, "Using command line arguments");
-        } else {
-            // interactive mode
+        if (args.length == 0) {
             try (Scanner scanner = new Scanner(System.in)) {
-                // String url = "https://toscrape.com/";
-                url = getUserInput(scanner, "Enter website: ");
-                // String saveLocation = "./output";
-                saveLocation = getUserInput(scanner, "Enter save location: ");
+                url = getUrl(args, scanner);
+                saveLocation = getSaveLocation(args, scanner);
             }
-        }
-
-        // Basic input validation
-        if (url == null || url.trim().isEmpty()) {
-            logger.log(Level.ERROR, "URL cannot be empty");
-            System.exit(1);
-        }
-        if (saveLocation == null || saveLocation.trim().isEmpty()) {
-            logger.log(Level.INFO, "Save location not specified; defaulting to ./output");
-            saveLocation = "./output";
+        } else {
+            url = getUrl(args, null);
+            saveLocation = getSaveLocation(args, null);
         }
 
         logger.log(Level.INFO, "Initializing Crawly with URL: {0} and Save Location: {1}",
                 url, saveLocation);
 
-        // Main application logic.
+        // Main application logic
         try {
             Downloader downloader = new Downloader(saveLocation); // create the dependency
             Crawler crawler = new Crawler(url, downloader); // inject dependency
@@ -60,5 +45,45 @@ public class Crawly {
         System.out.print(userPrompt);
         String userInput = scanner.nextLine();
         return userInput;
+    }
+
+    private static String getUrl(String[] args, Scanner scanner) {
+        String url;
+
+        if (scanner == null) {
+            // command line mode
+            url = args[0];
+        } else {
+            // interactive mode
+            url = getUserInput(scanner, "Enter website: ");
+        }
+
+        // Basic input validation
+        if (url == null || url.trim().isEmpty()) {
+            logger.log(Level.ERROR, "URL cannot be empty");
+            System.exit(1);
+        }
+
+        return url;
+    }
+
+    private static String getSaveLocation(String[] args, Scanner scanner) {
+        String saveLocation;
+
+        if (scanner == null) {
+            // command line mode
+            saveLocation = args.length > 1 ? args[1] : null;
+        } else {
+            // interactive mode
+            saveLocation = getUserInput(scanner, "Enter save location (optional): ");
+        }
+
+        // Set default if not provided
+        if (saveLocation == null || saveLocation.trim().isEmpty()) {
+            logger.log(Level.INFO, "Save location not specified; defaulting to ./output");
+            saveLocation = "./output";
+        }
+
+        return saveLocation;
     }
 }
