@@ -10,6 +10,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 public class Utils {
+    private static final int BUFFER_SIZE = 1024; // 1kb buffer size for downloadFile
 
     public static void downloadFile(String fileURL, String savePath) throws IOException {
         // use URI constructor for strict validation, then convert to URL to catch
@@ -22,12 +23,12 @@ public class Utils {
         }
 
         // try with resources to write data to file
-        try (BufferedInputStream in = new BufferedInputStream(url.openStream());
-                FileOutputStream fileOutputStream = new FileOutputStream(savePath)) {
-            byte[] dataBuffer = new byte[1024];
+        try (BufferedInputStream inputStream = new BufferedInputStream(url.openStream());
+                FileOutputStream outputStream = new FileOutputStream(savePath)) {
+            byte[] dataBuffer = new byte[BUFFER_SIZE];
             int bytesRead;
-            while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
-                fileOutputStream.write(dataBuffer, 0, bytesRead);
+            while ((bytesRead = inputStream.read(dataBuffer, 0, BUFFER_SIZE)) != -1) {
+                outputStream.write(dataBuffer, 0, bytesRead);
             }
         }
     }
