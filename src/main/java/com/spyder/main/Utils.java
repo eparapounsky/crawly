@@ -40,6 +40,7 @@ public class Utils {
         if (!directory.getAbsolutePath().startsWith(currentDirectory)) {
             System.err.println(
                     "WARNING: Attempted to delete directory outside workspace: " + directory.getAbsolutePath());
+            return;
         }
 
         File[] files = directory.listFiles();
