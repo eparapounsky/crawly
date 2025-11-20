@@ -12,14 +12,22 @@ public class Crawly {
         logger.log(Level.INFO, "Started Crawly");
 
         // Get user input.
-        // TO-DO: directly read command line arguments?
         String url;
         String saveLocation;
-        try (Scanner scanner = new Scanner(System.in)) {
-            // String url = "https://toscrape.com/";
-            url = getUserInput(scanner, "Enter website: ");
-            // String saveLocation = "./output";
-            saveLocation = getUserInput(scanner, "Enter save location: ");
+
+        if (args.length > 0) {
+            // command line mode
+            url = args[0];
+            saveLocation = args[1];
+            logger.log(Level.INFO, "Using command line arguments");
+        } else {
+            // interactive mode
+            try (Scanner scanner = new Scanner(System.in)) {
+                // String url = "https://toscrape.com/";
+                url = getUserInput(scanner, "Enter website: ");
+                // String saveLocation = "./output";
+                saveLocation = getUserInput(scanner, "Enter save location: ");
+            }
         }
 
         logger.log(Level.INFO, "Initializing Crawly with URL: {0} and Save Location: {1}",
