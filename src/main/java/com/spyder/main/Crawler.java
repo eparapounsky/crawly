@@ -6,6 +6,7 @@ import java.lang.System.Logger.Level;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashSet;
+import java.util.Set;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -31,7 +32,7 @@ public class Crawler {
 
     public void crawl() {
         try {
-            HashSet<String> visitedUrls = new HashSet<>();
+            Set<String> visitedUrls = new HashSet<>();
 
             crawlHelper(url, visitedUrls, MAX_CRAWL_DEPTH);
         } catch (Exception e) {
@@ -40,7 +41,7 @@ public class Crawler {
         }
     }
 
-    private void crawlHelper(String url, HashSet<String> visitedUrls, int maxDepth) {
+    private void crawlHelper(String url, Set<String> visitedUrls, int maxDepth) {
         // Check depth limit
         if (maxDepth <= 0) {
             logger.log(Level.DEBUG, "Reached maximum depth, stopping crawl at: {0}", url);
