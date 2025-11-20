@@ -13,9 +13,10 @@ public class Crawly {
         logger.log(Level.INFO, "Started Crawly");
 
         // String url = "https://toscrape.com/";
-        String url = getUserInput();
+        String url = getUserInput("Enter website: ");
         System.out.println(url);
-        String saveLocation = "./output";
+        // String saveLocation = "./output";
+        String saveLocation = getUserInput("Enter save location: ");
 
         logger.log(Level.INFO, "Initializing Crawly with URL: {0} and Save Location: {1}",
                 url, saveLocation);
@@ -32,9 +33,9 @@ public class Crawly {
         logger.log(Level.INFO, "Crawly finished");
     }
 
-    private static String getUserInput() {
-        System.out.print("Enter website: ");
-        String website = scanner.nextLine();
-        return website;
+    private static String getUserInput(String userPrompt) {
+        System.out.print(userPrompt);
+        String userInput = scanner.nextLine();
+        return userInput;
     }
 }
