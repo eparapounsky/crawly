@@ -24,6 +24,14 @@ public class Downloader {
     private static final Logger logger = System.getLogger(Downloader.class.getName());
 
     public Downloader(String saveLocation) {
+        // Ensure path is syntactically valid before assigning
+        try {
+            Paths.get(saveLocation);
+        } catch (Exception e) {
+            logger.log(Level.ERROR, "Invalid save location path: " + saveLocation, e);
+            throw new IllegalArgumentException("Invalid save location path: " + saveLocation, e);
+        }
+
         this.saveLocation = saveLocation;
     }
 
