@@ -30,6 +30,16 @@ public class Crawly {
             }
         }
 
+        // Basic input validation
+        if (url == null || url.trim().isEmpty()) {
+            logger.log(Level.ERROR, "URL cannot be empty");
+            System.exit(1);
+        }
+        if (saveLocation == null || saveLocation.trim().isEmpty()) {
+            logger.log(Level.INFO, "Save location not specified; defaulting to ./output");
+            saveLocation = "./output";
+        }
+
         logger.log(Level.INFO, "Initializing Crawly with URL: {0} and Save Location: {1}",
                 url, saveLocation);
 
