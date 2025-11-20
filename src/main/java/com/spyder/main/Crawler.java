@@ -19,6 +19,11 @@ public class Crawler {
     private static final Logger logger = System.getLogger(Crawler.class.getName());
 
     public Crawler(String url, Downloader downloader) {
+        // Validate URL format before assignment
+        if (!Utils.isValidUrl(url)) {
+            throw new IllegalArgumentException("Invalid URL format: " + url);
+        }
+
         this.url = url;
         this.downloader = downloader;
     }
