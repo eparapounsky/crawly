@@ -67,6 +67,10 @@ public class CrawlerTest {
                     filePath = filePath.substring(filePath.indexOf('\\', 3));
                 }
 
+                // replace custom image folder name and input directory with "images" for comparison
+                filePath = filePath.replaceAll("\\\\(images|" + Downloader.getImagesFolderName() + ")\\\\",
+                        "\\\\images\\\\");
+
                 // add relative file path to set
                 collectedFiles.add(filePath);
             }
