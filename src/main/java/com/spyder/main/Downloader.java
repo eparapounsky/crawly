@@ -144,7 +144,7 @@ public class Downloader {
                 }
             } catch (URISyntaxException | IOException e) {
                 logger.log(Level.ERROR, "Failed to download image: {0}", imageFileName, e);
-                return;
+                continue;
             }
 
             // Update the src attribute of the image in the HTML using new relative path.
