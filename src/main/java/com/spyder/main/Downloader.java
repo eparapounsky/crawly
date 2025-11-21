@@ -22,7 +22,7 @@ public class Downloader {
 
     private final String saveLocation;
     private static final Logger logger = System.getLogger(Downloader.class.getName());
-    private final static String IMAGES_FOLDER_NAME = "bugs";
+    private final static String IMAGES_FOLDER_NAME = "images";
 
     public static String getImagesFolderName() {
         return IMAGES_FOLDER_NAME;
