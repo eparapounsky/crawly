@@ -16,11 +16,11 @@ import org.jsoup.select.Elements;
 public class Crawler {
 
     private final String url;
-    private final Downloader downloader;
+    private final WebPageSaver downloader;
     private static final Logger logger = System.getLogger(Crawler.class.getName());
     private static final int MAX_CRAWL_DEPTH = 10;
 
-    public Crawler(String url, Downloader downloader) {
+    public Crawler(String url, WebPageSaver downloader) {
         // Validate URL format before assignment
         if (!Utils.isValidUrl(url)) {
             throw new IllegalArgumentException("Invalid URL format: " + url);

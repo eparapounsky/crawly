@@ -18,17 +18,17 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-public class Downloader {
+public class WebPageSaver {
 
     private final String saveLocation;
-    private static final Logger logger = System.getLogger(Downloader.class.getName());
+    private static final Logger logger = System.getLogger(WebPageSaver.class.getName());
     private final static String IMAGES_FOLDER_NAME = "images";
 
     public static String getImagesFolderName() {
         return IMAGES_FOLDER_NAME;
     }
 
-    public Downloader(String saveLocation) {
+    public WebPageSaver(String saveLocation) {
         // Ensure path is syntactically valid before assigning
         try {
             Paths.get(saveLocation);

@@ -30,7 +30,7 @@ public class Crawly {
 
         // Main application logic
         try {
-            Downloader downloader = new Downloader(saveLocation); // create the dependency
+            WebPageSaver downloader = new WebPageSaver(saveLocation); // create the dependency
             Crawler crawler = new Crawler(url, downloader); // inject dependency
             crawler.crawl();
         } catch (Exception e) {

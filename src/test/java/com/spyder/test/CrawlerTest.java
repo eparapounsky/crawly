@@ -12,7 +12,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import com.spyder.main.Crawler;
-import com.spyder.main.Downloader;
+import com.spyder.main.WebPageSaver;
 import com.spyder.main.Utils;
 import com.sun.net.httpserver.HttpServer;
 
@@ -68,7 +68,7 @@ public class CrawlerTest {
                 }
 
                 // replace custom image folder name and input directory with "images" for comparison
-                filePath = filePath.replaceAll("\\\\(images|" + Downloader.getImagesFolderName() + ")\\\\",
+                filePath = filePath.replaceAll("\\\\(images|" + WebPageSaver.getImagesFolderName() + ")\\\\",
                         "\\\\images\\\\");
 
                 // add relative file path to set
@@ -80,7 +80,7 @@ public class CrawlerTest {
     @Test
     void testHttpServer() {
         String saveLocation = outputDirectory.getAbsolutePath();
-        Downloader downloader = new Downloader(saveLocation);
+        WebPageSaver downloader = new WebPageSaver(saveLocation);
         Crawler crawler = new Crawler(TEST_URL, downloader);
         crawler.crawl();
 
