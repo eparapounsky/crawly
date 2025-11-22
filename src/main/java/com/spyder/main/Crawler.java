@@ -33,7 +33,6 @@ public class Crawler {
     public void crawl() {
         try {
             Set<String> visitedUrls = new HashSet<>();
-
             crawlHelper(url, visitedUrls, MAX_CRAWL_DEPTH);
         } catch (Exception e) {
             // use concatenation to include exception message
@@ -86,6 +85,7 @@ public class Crawler {
                     logger.log(Level.DEBUG, "Skipping external link: {0}", currentLink);
                     continue;
                 }
+
                 // recursive crawl with decremented depth
                 crawlHelper(currentLink, visitedUrls, maxDepth - 1);
             }
