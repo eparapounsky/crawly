@@ -14,7 +14,7 @@ Simply double-click `Crawly.exe` to launch the application. A console window wil
 Entering a URL is required.
 Entering a save location is optional; if you don't specify one, the app will default to `output` in the current directory.
 
-#### Command Line Mode (with arguments)
+## Command Line Mode (with arguments)
 
 You can also pass arguments directly:
 
