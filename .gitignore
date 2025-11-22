@@ -26,3 +26,6 @@ output/
 
 ### Distribution Files ###
 dist/
+
+### Executable Files ###
+Crawly.exe
