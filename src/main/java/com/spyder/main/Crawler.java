@@ -51,7 +51,7 @@ public class Crawler {
             logger.log(Level.DEBUG, "Started crawling webpage: {0}", url);
 
             Document webpage = Jsoup.connect(url).get(); // store parsed html
-            downloader.download(webpage, url);
+            downloader.saveWebPage(webpage, url);
             visitedUrls.add(url);
 
             // collect all links in current page

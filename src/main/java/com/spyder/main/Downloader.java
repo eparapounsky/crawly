@@ -40,7 +40,7 @@ public class Downloader {
         this.saveLocation = saveLocation;
     }
 
-    public void download(Document webpage, String url) {
+    public void saveWebPage(Document webpage, String url) {
         // Derive a relative file path from the URL.
         // (e.g. "/" -> index.html, "/about" -> about/index.html)
         String relativeFilePath = getRelativePath(url);
