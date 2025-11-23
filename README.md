@@ -6,15 +6,17 @@ A Java-based web crawler for downloading websites to browse offline.
 
 ## Usage
 
-**Prerequisites:** Java Runtime Environment (JRE) must be installed and available in your system PATH or JAVA_HOME environment variable.
+**Prerequisites:** Java 11 or higher must be installed and available in your system PATH or JAVA_HOME environment variable.
 
 ### Run on Windows (Easiest)
 
-Simply double-click `Crawly.exe` to launch the application. A console window will open and prompt you to enter a website URL and a save location.
-Entering a URL is required.
-Entering a save location is optional; if you don't specify one, the app will default to `output` in the current directory.
+Download the application from Releases, and double-click `Crawly.exe` to launch. A console window will open and prompt you to enter a website URL and a save location.
 
-## Command Line Mode (with arguments)
+* **Entering a URL is required.** 
+
+* Entering a save location is optional; if you don't specify one, the app will default to `output` in the current directory.
+
+### Command Line Mode (with arguments)
 
 You can also pass arguments directly:
 
