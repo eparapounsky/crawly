@@ -13,7 +13,7 @@ public class MyHttpServerHandler implements HttpHandler {
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
-        // Define the path to your HTML file
+        // Define path to HTML file
         String path = exchange.getRequestURI().toASCIIString();
         if (path.equals("/")) {
             path = "./input/index.html";
@@ -21,7 +21,7 @@ public class MyHttpServerHandler implements HttpHandler {
             path = "./input/" + path;
         }
         System.out.println("Test HttpServer URI: " + path);
-        Path filePath = Paths.get(path); // Adjust this path to your file location
+        Path filePath = Paths.get(path);
         if (Files.exists(filePath) && Files.isReadable(filePath)) {
             // Set response headers
             exchange.sendResponseHeaders(200, Files.size(filePath));
