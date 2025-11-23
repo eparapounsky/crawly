@@ -12,9 +12,9 @@ A Java-based web crawler for downloading websites to browse offline.
 
 Download the application from Releases, and double-click `Crawly.exe` to launch. A console window will open and prompt you to enter a website URL and a save location.
 
-* **Entering a URL is required.** 
+- **Entering a URL is required.**
 
-* Entering a save location is optional; if you don't specify one, the app will default to `output` in the current directory.
+- Entering a save location is optional; if you don't specify one, the app will default to `output` in the current directory.
 
 ### Command Line Mode (with arguments)
 
