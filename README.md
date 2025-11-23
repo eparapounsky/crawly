@@ -43,10 +43,6 @@ java -jar Crawly.jar http://example.com
 java -jar Crawly.jar http://example.com ./downloads
 ```
 
-### About the Windows Executable
-
-The `Crawly.exe` file was created using [Launch4j](https://launch4j.sourceforge.net/), a Java executable wrapper. Launch4j allows Java applications to be packaged as native Windows executables, providing a more user-friendly experience by eliminating the need to manually invoke Java from the command line. The executable automatically detects your Java installation and launches the application with the appropriate Java runtime.
-
 ### Option 2: Run the Windows Executable
 
 Download `Crawly.exe` from Releases and double-click to launch. A console window will open and prompt you to enter a website URL and a save location.
@@ -65,6 +61,10 @@ Examples:
 Crawly.exe http://example.com
 Crawly.exe http://example.com ./downloads
 ```
+
+### About the Windows Executable
+
+The `Crawly.exe` file was created using [Launch4j](https://launch4j.sourceforge.net/), a Java executable wrapper. Launch4j allows Java applications to be packaged as native Windows executables, providing a more user-friendly experience by eliminating the need to manually invoke Java from the command line. The executable automatically detects your Java installation and launches the application with the appropriate Java runtime.
 
 ## Current Features
 
