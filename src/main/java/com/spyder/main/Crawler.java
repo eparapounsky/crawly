@@ -16,18 +16,18 @@ import org.jsoup.select.Elements;
 public class Crawler {
 
     private final String url;
-    private final WebPageSaver downloader;
+    private final WebPageSaver webContentDownloader;
     private static final Logger logger = System.getLogger(Crawler.class.getName());
     private static final int MAX_CRAWL_DEPTH = 10;
 
-    public Crawler(String url, WebPageSaver downloader) {
+    public Crawler(String url, WebPageSaver webContentDownloader) {
         // Validate URL format before assignment
         if (!Utils.isValidUrl(url)) {
             throw new IllegalArgumentException("Invalid URL format: " + url);
         }
 
         this.url = url;
-        this.downloader = downloader;
+        this.webContentDownloader = webContentDownloader;
     }
 
     public void crawl() {
@@ -51,7 +51,7 @@ public class Crawler {
             logger.log(Level.DEBUG, "Started crawling webpage: {0}", url);
 
             Document webpage = Jsoup.connect(url).get(); // store parsed html
-            downloader.saveWebPage(webpage, url);
+            webContentDownloader.saveWebPage(webpage, url);
             visitedUrls.add(url);
 
             // collect all links in current page
@@ -90,7 +90,7 @@ public class Crawler {
                 crawlHelper(currentLink, visitedUrls, maxDepth - 1);
             }
         } catch (IOException | URISyntaxException e) {
-            logger.log(Level.WARNING, "Failed to crawl page: {0} - continuing with other pages", url, e);
+            logger.log(Level.DEBUG, "Failed to crawl page: {0} - continuing with other pages", url, e);
         }
     }
 
