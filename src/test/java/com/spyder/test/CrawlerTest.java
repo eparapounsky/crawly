@@ -37,10 +37,10 @@ public class CrawlerTest {
         Assertions.assertTrue(inputFile.exists(), inputFile.getAbsolutePath() + " doesn't exist!");
 
         outputDirectory = new File("./outputTest");
+        Utils.deleteDirectory(outputDirectory); // clean in case test was killed and couldn't clean in @AfterAll
         outputDirectory.mkdirs();
-        Utils.deleteDirectory(outputDirectory); // clean in case test was killed and coudn't clean in @AfterAll
         Assertions.assertTrue(outputDirectory.exists(),
-                inputFile.getAbsolutePath() + "Failed to create output directory!");
+                outputDirectory.getAbsolutePath() + " Failed to create output directory!");
     }
 
     @AfterAll
@@ -67,7 +67,8 @@ public class CrawlerTest {
                     filePath = filePath.substring(filePath.indexOf('\\', 3));
                 }
 
-                // replace custom image folder name and input directory with "images" for comparison
+                // replace custom image folder name and input directory with "images" for
+                // comparison
                 filePath = filePath.replaceAll("\\\\(images|" + WebPageSaver.getImagesFolderName() + ")\\\\",
                         "\\\\images\\\\");
 
