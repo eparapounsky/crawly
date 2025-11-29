@@ -75,7 +75,7 @@ public class Crawly {
             saveLocation = args.length > 1 ? args[1] : null;
         } else {
             // interactive mode
-            saveLocation = getUserInput(scanner, "Enter save location (optional): ");
+            saveLocation = getUserInput(scanner, "Enter save location (optional, hit Enter to skip): ");
         }
 
         // Set default if not provided
