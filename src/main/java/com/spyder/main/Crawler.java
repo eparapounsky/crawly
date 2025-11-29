@@ -50,6 +50,9 @@ public class Crawler {
         try {
             logger.log(Level.DEBUG, "Started crawling webpage: {0}", url);
 
+            // Store parsed HTML in memory, not on disk yet, because
+            // we need to modify it before saving it.
+            // This is more efficient than writing to disk and reading back.
             Document webpage = Jsoup.connect(url).get(); // store parsed html
             webContentDownloader.saveWebPage(webpage, url);
             visitedUrls.add(url);
