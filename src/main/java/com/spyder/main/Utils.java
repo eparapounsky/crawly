@@ -48,12 +48,17 @@ public class Utils {
             return;
         }
 
+        // first, recursively delete all contents
         for (File file : files) {
             if (file.isDirectory()) {
                 deleteDirectory(file);
+            } else {
+                file.delete();
             }
-            file.delete();
         }
+
+        // finally, delete the directory itself
+        directory.delete();
     }
 
     // determines if a URL string likely ends with a filename
