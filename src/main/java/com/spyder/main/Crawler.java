@@ -82,8 +82,8 @@ public class Crawler {
                 // do not follow external links
                 URI currentUri = new URI(currentLink);
                 String currentDomain = currentUri.getHost();
-                URI baseUri = new URI(this.url);
-                String originalDomain = baseUri.getHost();
+                URI originalUri = new URI(this.url);
+                String originalDomain = originalUri.getHost();
                 if (!currentDomain.equals(originalDomain)) {
                     logger.log(Level.DEBUG, "Skipping external link: {0}", currentLink);
                     continue;
