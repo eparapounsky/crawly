@@ -41,18 +41,18 @@ public class WebPageSaver {
     }
 
     public void saveWebPage(Document webpage, String url) {
-        // Derive a relative file path from the URL.
-        // (e.g. "/" -> index.html, "/about" -> about/index.html)
+        // Derive a relative file path from the URL for the webpage.
+        // Needed to create the correct parent directory structure and file name.
         String relativeFilePath = getRelativePath(url);
 
-        // Build the full file path that preserves the directory structure of the URL.
-        // Replace / with \ on Windows.
-        // TO-DO: Replace with Path API (safer for file operations)
-        String absoluteFilePath = saveLocation + File.separator + relativeFilePath.replace("/", File.separator);
+        // Build the full file path that preserves the directory structure of the URL,
+        // and uses the save location as the root.
+        // Use Path API for proper cross-platform path handling (handle \ on Windows).
+        Path targetFilePath = Paths.get(saveLocation).resolve(relativeFilePath);
 
         // Ensure the parent directories for the target file exist, creating any nested
         // directories needed to mirror the URL path before writing the file.
-        Path parentDirectoryPath = Paths.get(absoluteFilePath).getParent();
+        Path parentDirectoryPath = targetFilePath.getParent();
         if (parentDirectoryPath != null) { // null if saving to root directory
             try {
                 Files.createDirectories(parentDirectoryPath);
@@ -64,34 +64,59 @@ public class WebPageSaver {
             }
         }
 
+        // Create a copy of the webpage to avoid modifying the original document when
+        // updating internal links, which might still be used for crawling
+        Document webpageForSaving = webpage.clone();
+
         // Download all images in the webpage, and update their src attributes to point
         // to the local copies, before writing the HTML file.
-        downloadImages(webpage, saveLocation, relativeFilePath);
+        downloadImages(webpageForSaving, saveLocation, relativeFilePath);
 
-        // Write the modified HTML content (with updated image paths) to the file.
-        try (FileWriter myWriter = new FileWriter(absoluteFilePath)) {
-            myWriter.write(webpage.html());
+        // Update internal links to point to the correct local file paths
+        updateInternalLinks(webpageForSaving, url, relativeFilePath);
+
+        // Write the modified HTML content, with updated image and link paths,
+        // to the file.
+        try (FileWriter myWriter = new FileWriter(targetFilePath.toFile())) {
+            myWriter.write(webpageForSaving.html());
         } catch (IOException e) {
-            logger.log(Level.ERROR, "Failed to write webpage to file: " + absoluteFilePath, e);
+            logger.log(Level.ERROR, "Failed to write webpage to file: " + targetFilePath, e);
         }
     }
 
+    /**
+     * Converts a URL to a relative file path for offline website storage.
+     * 
+     * Follows standard web server conventions:
+     * - Root path "/" becomes "index.html"
+     * - URLs without explicit file extensions are treated as file requests (.html)
+     * - URLs with explicit extensions are preserved as-is (.jpg, .png, .pdf, etc.)
+     * 
+     * Examples:
+     * - "https://example.com/" → "index.html" (root directory)
+     * - "https://example.com/about" → "about.html" (file request)
+     * - "https://example.com/news/sports" → "news/sports.html" (nested file)
+     * - "https://example.com/file.pdf" → "file.pdf" (preserves actual files)
+     * 
+     * @param url The complete URL to convert to a relative file path
+     * @return A relative file path suitable for local filesystem storage
+     * 
+     */
     private String getRelativePath(String url) {
         // Use the URL path to determine the file path within the save location.
         String relativePath = extractPathFromUrl(url);
 
         if (relativePath.equals("/")) {
-            relativePath = "index.html"; // if root path, save as index.html
-        } else if (!relativePath.endsWith(".html") && !relativePath.contains(".")) {
-            // Treat paths without an explicit file extension (.html, .jpg)
-            // as directories, and save the resource as an index page.
-            // Also, handle both "/about" and "/about/" by ensuring
-            // the returned path ends with "/index.html".
+            // Save the root path as index.html
+            relativePath = "index.html";
+        } else if (!relativePath.contains(".")) {
+            // Handle paths without explicit file extensions
+            // Remove trailing slash if present
             if (relativePath.endsWith("/")) {
-                relativePath = relativePath + "index.html";
-            } else {
-                relativePath = relativePath + "/index.html";
+                relativePath = relativePath.substring(0, relativePath.length() - 1);
             }
+            // Append .html to treat as file request
+            relativePath = relativePath + ".html";
         }
 
         // Remove the leading slash to ensure a valid relative path (no //).
@@ -108,9 +133,9 @@ public class WebPageSaver {
      */
     private String extractPathFromUrl(String url) {
         try {
-            // returns null if no path, or "/" for root
-            String path = new URI(url).getPath();
-            return (path == null || path.isEmpty()) ? "/" : path;
+
+            String path = new URI(url).getPath(); // returns null if no path, or "/" for root
+            return (path == null || path.isEmpty()) ? "/" : path; // default to "/" if null
         } catch (URISyntaxException e) {
             // malformed URL: fallback to root
             logger.log(Level.WARNING, "Malformed URL: " + url + "- defaulting to '/'", e);
@@ -123,9 +148,9 @@ public class WebPageSaver {
         Elements images = webpage.select("img");
 
         // Create the images directory at the root level (or do nothing if it exists).
-        String imagesDirectory = rootDirectory + File.separator + IMAGES_FOLDER_NAME;
+        Path imagesDirectory = Paths.get(rootDirectory).resolve(IMAGES_FOLDER_NAME);
         try {
-            Files.createDirectories(Paths.get(imagesDirectory));
+            Files.createDirectories(imagesDirectory);
         } catch (IOException e) {
             logger.log(Level.ERROR, "Failed to create images folder", e);
             return;
@@ -144,7 +169,7 @@ public class WebPageSaver {
 
             // Create the image filepath for saving the image locally.
             String imageFileName = extractImageNameFromUrl(imageAbsoluteUrl);
-            String imageFilePath = imagesDirectory + File.separator + imageFileName;
+            Path imageFilePath = imagesDirectory.resolve(imageFileName);
 
             // Download the image.
             try {
@@ -153,7 +178,7 @@ public class WebPageSaver {
                 // read from stream to get image data and copy to local file,
                 // replacing file if it exists
                 try (InputStream imageInputStream = imageUri.toURL().openStream()) {
-                    Files.copy(imageInputStream, Paths.get(imageFilePath), StandardCopyOption.REPLACE_EXISTING);
+                    Files.copy(imageInputStream, imageFilePath, StandardCopyOption.REPLACE_EXISTING);
                 }
             } catch (URISyntaxException | IOException e) {
                 logger.log(Level.ERROR, "Failed to download image: {0}", imageFileName, e);
@@ -161,8 +186,55 @@ public class WebPageSaver {
             }
 
             // Update the src attribute of the image in the HTML using new relative path.
-            String relativeImagePath = calculateRelativePath(currentPagePath, IMAGES_FOLDER_NAME + imageFileName);
+            String relativeImagePath = calculateRelativePath(currentPagePath, IMAGES_FOLDER_NAME + "/" + imageFileName);
             img.attr("src", relativeImagePath);
+        }
+    }
+
+    private void updateInternalLinks(Document webpage, String baseUrl, String currentPagePath) {
+        // Collect all links in the current page
+        Elements links = webpage.select("a[href]");
+
+        try {
+            String baseDomain = new URI(baseUrl).getHost();
+
+            for (Element link : links) {
+                String href = link.attr("href"); // needed for skipping certain links
+                String absoluteHref = link.attr("abs:href"); // needed for domain comparison
+
+                // Skip empty or null hrefs
+                if (href == null || href.isEmpty() || absoluteHref == null || absoluteHref.isEmpty()) {
+                    continue;
+                }
+
+                // Skip external links, anchors, javascript, mailto, etc.
+                if (href.startsWith("#") || href.startsWith("javascript:") ||
+                        href.startsWith("mailto:") || href.startsWith("tel:")) {
+                    continue;
+                }
+
+                try {
+                    String linkDomain = new URI(absoluteHref).getHost();
+
+                    // Only process internal links (same domain)
+                    if (linkDomain != null && linkDomain.equals(baseDomain)) {
+                        // Convert the absolute URL to the local file path it should point to
+                        String targetLocalPath = getRelativePath(absoluteHref);
+
+                        // Calculate relative path from current page to target page
+                        String relativeHref = calculateRelativePath(currentPagePath, targetLocalPath);
+
+                        // Update the href attribute
+                        link.attr("href", relativeHref);
+
+                        logger.log(Level.DEBUG, "Updated link: {0} -> {1}", href, relativeHref);
+                    }
+                } catch (URISyntaxException e) {
+                    logger.log(Level.DEBUG, "Skipping malformed link: {0}", href);
+                }
+            }
+        } catch (URISyntaxException e) {
+            logger.log(Level.WARNING, "Failed to parse base URL for link processing: {0}", baseUrl, e);
         }
     }
 
@@ -195,9 +267,9 @@ public class WebPageSaver {
      * HTML file is in the directory structure.
      * 
      * For example:
-     * - Source: "about/team/index.html"
+     * - Source: "about/team.html"
      * - Destination: "images/photo.jpg"
-     * - Result: "../../images/photo.jpg"
+     * - Result: "../images/photo.jpg"
      * 
      * This allows the HTML to correctly reference images using relative paths
      * rather than absolute paths, making the downloaded site portable.
@@ -207,7 +279,7 @@ public class WebPageSaver {
             // Get the path of the source file's parent directory.
             Path from = Paths.get(sourcePath).getParent();
             if (from == null) {
-                from = Paths.get(""); // empty path (root directory)
+                from = Paths.get(""); // empty path (root directory of save location)
             }
 
             // Get the destination file path.
