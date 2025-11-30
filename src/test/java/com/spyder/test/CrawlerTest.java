@@ -53,27 +53,37 @@ public class CrawlerTest {
 
     // recursively collect all files in a directory (relative to the root)
     private void getFiles(File directory, Set<String> collectedFiles) {
-        File[] files = directory.listFiles();
+        getFilesRecursive(directory, directory, collectedFiles);
+    }
+
+    private void getFilesRecursive(File rootDirectory, File currentDirectory, Set<String> collectedFiles) {
+        File[] files = currentDirectory.listFiles();
+        if (files == null) {
+            return;
+        }
 
         for (File file : files) {
             if (file.isDirectory()) {
-                getFiles(file, collectedFiles);
+                getFilesRecursive(rootDirectory, file, collectedFiles);
             } else {
-                String filePath = file.getPath();
+                // Get relative path from the root directory
+                String rootPath = rootDirectory.getAbsolutePath();
+                String filePath = file.getAbsolutePath();
 
-                // skip "C:\" to get relative path from root
-                int backslashIndex = filePath.indexOf('\\', 3);
-                if (backslashIndex > 0) {
-                    filePath = filePath.substring(filePath.indexOf('\\', 3));
+                if (filePath.startsWith(rootPath)) {
+                    String relativePath = filePath.substring(rootPath.length());
+                    if (relativePath.startsWith("/") || relativePath.startsWith("\\")) {
+                        relativePath = relativePath.substring(1);
+                    }
+
+                    // Normalize path separators to forward slashes for consistent comparison
+                    relativePath = relativePath.replace("\\", "/");
+
+                    // Normalize image folder names for comparison
+                    relativePath = relativePath.replaceAll("/(images|" + WebPageSaver.getImagesFolderName() + ")/", "/images/");
+
+                    collectedFiles.add(relativePath);
                 }
-
-                // replace custom image folder name and input directory with "images" for
-                // comparison
-                filePath = filePath.replaceAll("\\\\(images|" + WebPageSaver.getImagesFolderName() + ")\\\\",
-                        "\\\\images\\\\");
-
-                // add relative file path to set
-                collectedFiles.add(filePath);
             }
         }
     }
