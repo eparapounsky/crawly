@@ -16,18 +16,18 @@ import org.jsoup.select.Elements;
 public class Crawler {
 
     private final String url;
-    private final WebPageSaver webContentDownloader;
+    private final WebPageSaver webPageSaver;
     private static final Logger logger = System.getLogger(Crawler.class.getName());
     private static final int MAX_CRAWL_DEPTH = 10;
 
-    public Crawler(String url, WebPageSaver webContentDownloader) {
+    public Crawler(String url, WebPageSaver webPageSaver) {
         // Validate URL format before assignment
         if (!Utils.isValidUrl(url)) {
             throw new IllegalArgumentException("Invalid URL format: " + url);
         }
 
         this.url = url;
-        this.webContentDownloader = webContentDownloader;
+        this.webPageSaver = webPageSaver;
     }
 
     public void crawl() {
@@ -54,7 +54,7 @@ public class Crawler {
             // we need to modify it before saving it.
             // This is more efficient than writing to disk and reading back.
             Document webpage = Jsoup.connect(url).get(); // store parsed html
-            webContentDownloader.saveWebPage(webpage, url);
+            webPageSaver.saveWebPage(webpage, url);
             visitedUrls.add(url);
 
             // collect all links in current page
