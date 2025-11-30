@@ -86,21 +86,20 @@ public class WebPageSaver {
 
     /**
      * Converts a URL to a relative file path for offline website storage.
-     * 
-     * Follows standard web server conventions:
-     * - Root path "/" becomes "index.html"
-     * - URLs without explicit file extensions are treated as file requests (.html)
-     * - URLs with explicit extensions are preserved as-is (.jpg, .png, .pdf, etc.)
-     * 
-     * Examples:
-     * - "https://example.com/" → "index.html" (root directory)
-     * - "https://example.com/about" → "about.html" (file request)
-     * - "https://example.com/news/sports" → "news/sports.html" (nested file)
-     * - "https://example.com/file.pdf" → "file.pdf" (preserves actual files)
-     * 
+     *
+     * Follows standard web server conventions: - Root path "/" becomes
+     * "index.html" - URLs without explicit file extensions are treated as file
+     * requests (.html) - URLs with explicit extensions are preserved as-is
+     * (.jpg, .png, .pdf, etc.)
+     *
+     * Examples: "https://example.com/" → "index.html" (root directory) 
+     * "https://example.com/about" → "about.html" (file request) 
+     * "https://example.com/news/sports" → "news/sports.html" (nested file) 
+     * "https://example.com/file.pdf" → "file.pdf" (preserves actual files)
+     *
      * @param url The complete URL to convert to a relative file path
      * @return A relative file path suitable for local filesystem storage
-     * 
+     *
      */
     private String getRelativePath(String url) {
         // Use the URL path to determine the file path within the save location.
@@ -208,8 +207,8 @@ public class WebPageSaver {
                 }
 
                 // Skip external links, anchors, javascript, mailto, etc.
-                if (href.startsWith("#") || href.startsWith("javascript:") ||
-                        href.startsWith("mailto:") || href.startsWith("tel:")) {
+                if (href.startsWith("#") || href.startsWith("javascript:")
+                        || href.startsWith("mailto:") || href.startsWith("tel:")) {
                     continue;
                 }
 
@@ -261,16 +260,14 @@ public class WebPageSaver {
     }
 
     /**
-     * Calculates the relative path from a source HTML file to a destination file
-     * (typically an image). This ensures that when the HTML file references the
-     * destination file, the link will work regardless of how deeply nested the
-     * HTML file is in the directory structure.
-     * 
-     * For example:
-     * - Source: "about/team.html"
-     * - Destination: "images/photo.jpg"
-     * - Result: "../images/photo.jpg"
-     * 
+     * Calculates the relative path from a source HTML file to a destination
+     * file (typically an image). This ensures that when the HTML file
+     * references the destination file, the link will work regardless of how
+     * deeply nested the HTML file is in the directory structure.
+     *
+     * For example: - Source: "about/team.html" - Destination:
+     * "images/photo.jpg" - Result: "../images/photo.jpg"
+     *
      * This allows the HTML to correctly reference images using relative paths
      * rather than absolute paths, making the downloaded site portable.
      */
