@@ -23,6 +23,7 @@ output/
 
 ### Test Files ###
 *.jpg
+input/
 
 ### Distribution Files ###
 dist/
