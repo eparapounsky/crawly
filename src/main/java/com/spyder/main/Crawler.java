@@ -21,7 +21,7 @@ public class Crawler {
     private static final int MAX_CRAWL_DEPTH = 10;
 
     public Crawler(String url, WebPageSaver webPageSaver) {
-        // Validate URL format before assignment
+        // validate URL format before assignment
         if (!Utils.isValidUrl(url)) {
             throw new IllegalArgumentException("Invalid URL format: " + url);
         }
@@ -41,19 +41,19 @@ public class Crawler {
     }
 
     private void crawlHelper(String url, Set<String> visitedUrls, int maxDepth) {
-        // Check depth limit
+        // check depth limit
         if (maxDepth <= 0) {
             logger.log(Level.DEBUG, "Reached maximum depth, stopping crawl at: {0}", url);
             return;
         }
 
-        try {
-            logger.log(Level.DEBUG, "Started crawling webpage: {0}", url);
+        logger.log(Level.DEBUG, "Started crawling webpage: {0}", url);
 
-            // Store parsed HTML in memory, not on disk yet, because
-            // we need to modify it before saving it.
-            // This is more efficient than writing to disk and reading back.
-            Document webpage = Jsoup.connect(url).get(); // store parsed html
+        try {
+            // Store parsed HTML in memory ("webpage" variable), not on the disk yet, 
+            // because we need to modify it before saving it.
+            // This is more efficient than writing to the disk and reading back.
+            Document webpage = Jsoup.connect(url).get();
             webPageSaver.saveWebPage(webpage, url);
             visitedUrls.add(url);
 
@@ -79,21 +79,32 @@ public class Crawler {
                     continue;
                 }
 
-                // do not follow external links
-                URI currentUri = new URI(currentLink);
-                String currentDomain = currentUri.getHost();
-                URI originalUri = new URI(this.url);
-                String originalDomain = originalUri.getHost();
-                if (!currentDomain.equals(originalDomain)) {
-                    logger.log(Level.DEBUG, "Skipping external link: {0}", currentLink);
-                    continue;
+                try {
+                    // skip external links
+                    URI currentUri = new URI(currentLink);
+                    String currentDomain = currentUri.getHost();
+                    URI originalUri = new URI(this.url);
+                    String originalDomain = originalUri.getHost();
+                    if (!currentDomain.equals(originalDomain)) {
+                        logger.log(Level.DEBUG, "Skipping external link: {0}", currentLink);
+                        continue;
+                    }
+
+                    // skip links with fragments
+                    String fragment = currentUri.getFragment();
+                    if (fragment != null && !fragment.isEmpty()) {
+                        logger.log(Level.DEBUG, "Skipping link with fragment identifier: {0}", currentLink);
+                        continue;
+                    }
+                } catch (URISyntaxException e) {
+                    logger.log(Level.DEBUG, "Cannot parse URI, but will attempt to crawl: {0}", currentLink);
                 }
 
                 // recursive crawl with decremented depth
                 crawlHelper(currentLink, visitedUrls, maxDepth - 1);
             }
-        } catch (IOException | URISyntaxException e) {
-            logger.log(Level.DEBUG, "Failed to crawl page: {0} - continuing with other pages", url, e);
+        } catch (IOException e) {
+            logger.log(Level.WARNING, "Failed to connect to URL with Jsoup: " + url + " - continuing with other pages", e);
         }
     }
 
