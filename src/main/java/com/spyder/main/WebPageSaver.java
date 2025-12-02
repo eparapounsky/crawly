@@ -92,9 +92,9 @@ public class WebPageSaver {
      * requests (.html) - URLs with explicit extensions are preserved as-is
      * (.jpg, .png, .pdf, etc.)
      *
-     * Examples: "https://example.com/" → "index.html" (root directory) 
-     * "https://example.com/about" → "about.html" (file request) 
-     * "https://example.com/news/sports" → "news/sports.html" (nested file) 
+     * Examples: "https://example.com/" → "index.html" (root directory)
+     * "https://example.com/about" → "about.html" (file request)
+     * "https://example.com/news/sports" → "news/sports.html" (nested file)
      * "https://example.com/file.pdf" → "file.pdf" (preserves actual files)
      *
      * @param url The complete URL to convert to a relative file path
