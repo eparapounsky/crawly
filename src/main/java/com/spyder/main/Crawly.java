@@ -4,12 +4,19 @@ import java.lang.System.Logger;
 import java.lang.System.Logger.Level;
 import java.util.Scanner;
 
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
 public class Crawly {
 
     private static final Logger logger = System.getLogger(Crawly.class.getName());
 
     public static void main(String[] args) {
         logger.log(Level.INFO, "Started Crawly");
+
+        setUpGui();
 
         // Get user input
         String url;
@@ -39,6 +46,32 @@ public class Crawly {
         }
 
         logger.log(Level.INFO, "Crawly finished");
+    }
+
+    private static void setUpGui() {
+        // create the main window
+        JFrame frame = new JFrame();
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(500, 600);
+
+        // create panel (container for components)
+        JPanel panel = new JPanel();
+        panel.setSize(100, 200);
+
+        // create and add button to frame
+        JButton button = new JButton("Go");
+        button.setBounds(150, 200, 220, 50);
+        panel.add(button);
+
+        // create and add text fields to panel
+        JTextField urlField = new JTextField(20);
+        panel.add(urlField);
+
+        // add panel to frame
+        frame.add(panel);
+
+        // set frame to visible
+        frame.setVisible(true);
     }
 
     private static String getUserInput(Scanner scanner, String userPrompt) {
