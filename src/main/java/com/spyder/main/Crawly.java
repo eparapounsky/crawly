@@ -52,40 +52,62 @@ public class Crawly {
 
     private static void setUpGui() {
         // create the main window
-        JFrame frame = new JFrame("Crawly");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // exit application when window is closed
-        frame.setSize(500, 200);
-        frame.setLocationRelativeTo(null); // center window on screen
+        JFrame frame = getFrame();
 
         // create panel (container for components)
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS)); // use box layout with vertical stacking
-        panel.add(javax.swing.Box.createVerticalStrut(15)); // add some vertical space
+        JPanel panel = getPanel();
 
         // create and add label to panel
-        JLabel label = new JLabel("Enter URL to crawl:");
-        label.setAlignmentX(JPanel.CENTER_ALIGNMENT); // center horizontally
-        panel.add(label);
-        panel.add(javax.swing.Box.createVerticalStrut(10)); // add some vertical space
+        getLabel(panel);
 
         // create and add text fields to panel
-        JTextField urlField = new JTextField(30);
-        urlField.setMaximumSize(urlField.getPreferredSize()); // prevent stretching, use size specified in constructor
-        urlField.setAlignmentX(JPanel.CENTER_ALIGNMENT); // center horizontally
-        panel.add(urlField);
-        panel.add(javax.swing.Box.createVerticalStrut(15)); // add some vertical space
+        getUrlField(panel);
 
         // create and add button to frame
-        JButton button = new JButton("Go");
-        button.setBounds(150, 200, 220, 50);
-        button.setAlignmentX(JPanel.CENTER_ALIGNMENT); // center horizontally
-        panel.add(button);
+        getButton(panel);
 
         // add panel to frame
         frame.add(panel);
 
         // set frame to visible
         frame.setVisible(true);
+    }
+
+    private static void getButton(JPanel panel) {
+        JButton button = new JButton("Go");
+        button.setBounds(150, 200, 220, 50);
+        button.setAlignmentX(JPanel.CENTER_ALIGNMENT); // center horizontally
+        panel.add(button);
+    }
+
+    private static void getUrlField(JPanel panel) {
+        JTextField urlField = new JTextField(30);
+        urlField.setMaximumSize(urlField.getPreferredSize()); // prevent stretching, use size specified in constructor
+        urlField.setAlignmentX(JPanel.CENTER_ALIGNMENT); // center horizontally
+        panel.add(urlField);
+        panel.add(javax.swing.Box.createVerticalStrut(15)); // add some vertical space
+    }
+
+    private static void getLabel(JPanel panel) {
+        JLabel label = new JLabel("Enter URL to crawl:");
+        label.setAlignmentX(JPanel.CENTER_ALIGNMENT); // center horizontally
+        panel.add(label);
+        panel.add(javax.swing.Box.createVerticalStrut(10)); // add some vertical space
+    }
+
+    private static JPanel getPanel() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS)); // use box layout with vertical stacking
+        panel.add(javax.swing.Box.createVerticalStrut(15)); // add some vertical space
+        return panel;
+    }
+
+    private static JFrame getFrame() {
+        JFrame frame = new JFrame("Crawly");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // exit application when window is closed
+        frame.setSize(500, 200);
+        frame.setLocationRelativeTo(null); // center window on screen
+        return frame;
     }
 
     private static String getUserInput(Scanner scanner, String userPrompt) {
