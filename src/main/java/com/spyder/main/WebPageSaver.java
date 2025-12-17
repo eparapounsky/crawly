@@ -20,14 +20,14 @@ import org.jsoup.select.Elements;
 
 public class WebPageSaver {
 
-    private final String saveLocation;
-    private static final Logger logger = System.getLogger(WebPageSaver.class.getName());
+    // Static constants
     private final static String IMAGES_FOLDER_NAME = "images";
 
-    public static String getImagesFolderName() {
-        return IMAGES_FOLDER_NAME;
-    }
+    // Instance fields
+    private static final Logger logger = System.getLogger(WebPageSaver.class.getName());
+    private final String saveLocation;
 
+    // Constructor
     public WebPageSaver(String saveLocation) {
         // Ensure path is syntactically valid before assigning
         try {
@@ -38,6 +38,11 @@ public class WebPageSaver {
         }
 
         this.saveLocation = saveLocation;
+    }
+
+    // Public methods
+    public static String getImagesFolderName() {
+        return IMAGES_FOLDER_NAME;
     }
 
     public void saveWebPage(Document webpage, String url) {
@@ -84,6 +89,7 @@ public class WebPageSaver {
         }
     }
 
+    // Private methods
     /**
      * Converts a URL to a relative file path for offline website storage.
      *
