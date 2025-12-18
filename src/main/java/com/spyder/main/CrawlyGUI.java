@@ -26,41 +26,36 @@ public class CrawlyGUI {
         this.frame = createFrame(); // create the main window
         this.panel = createPanel(); // create panel (container for components)
 
-        this.urlLabel = createUrlLabel(); // create url label
+        this.urlLabel = createLabel("Enter URL to crawl:"); // create url label
         this.panel.add(urlLabel); // add URL label to panel
-        panel.add(javax.swing.Box.createVerticalStrut(10)); // add some vertical space
+        this.panel.add(javax.swing.Box.createVerticalStrut(10)); // add some vertical space
 
-        this.urlField = createUrlField(); // create url field
-        panel.add(urlField); // add URL field to panel
-        panel.add(javax.swing.Box.createVerticalStrut(15)); // add some vertical space
+        this.urlField = createTextField(); // create url field
+        this.panel.add(urlField); // add URL field to panel
+        this.panel.add(javax.swing.Box.createVerticalStrut(15)); // add some vertical space
 
-        this.crawlButton = CrawlyGUI.createButton(); // create button
-        panel.add(crawlButton); // add button to panel
+        this.saveLocationLabel = createLabel("Enter save location (optional):"); // create save location label
+        this.panel.add(saveLocationLabel); // add save location label to panel
+        this.panel.add(javax.swing.Box.createVerticalStrut(10)); // add some vertical space
 
-        frame.add(panel); // add panel to frame
-        frame.setVisible(true); // set frame to visible
+        this.saveLocationField = createTextField(); // create save location field
+        this.panel.add(saveLocationField); // add save location field to panel
+        this.panel.add(javax.swing.Box.createVerticalStrut(15)); // add some vertical space
+
+        this.crawlButton = createButton("Go"); // create button
+        this.panel.add(crawlButton); // add button to panel
+
+        this.frame.add(panel); // add panel to frame
+        this.frame.setVisible(true); // set frame to visible
     }
 
     // private void setupLayout() {}
-
-    private static JButton createButton() {
-        JButton button = new JButton("Go");
-        button.setBounds(150, 200, 220, 50);
-        button.setAlignmentX(JPanel.CENTER_ALIGNMENT); // center horizontally
-        return button;
-    }
-
-    private static JTextField createUrlField() {
-        JTextField urlField = new JTextField(30);
-        urlField.setMaximumSize(urlField.getPreferredSize()); // prevent stretching, use size specified in constructor
-        urlField.setAlignmentX(JPanel.CENTER_ALIGNMENT); // center horizontally
-        return urlField;
-    }
-
-    private static JLabel createUrlLabel() {
-        JLabel label = new JLabel("Enter URL to crawl:");
-        label.setAlignmentX(JPanel.CENTER_ALIGNMENT); // center horizontally
-        return label;
+    private static JFrame createFrame() {
+        JFrame frame = new JFrame("Crawly");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // exit application when window is closed
+        frame.setSize(500, 230); // set window size
+        frame.setLocationRelativeTo(null); // center window on screen
+        return frame;
     }
 
     private static JPanel createPanel() {
@@ -70,12 +65,23 @@ public class CrawlyGUI {
         return panel;
     }
 
-    private static JFrame createFrame() {
-        JFrame frame = new JFrame("Crawly");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // exit application when window is closed
-        frame.setSize(500, 200);
-        frame.setLocationRelativeTo(null); // center window on screen
-        return frame;
+    private static JLabel createLabel(String labelText) {
+        JLabel label = new JLabel(labelText);
+        label.setAlignmentX(JPanel.CENTER_ALIGNMENT); // center horizontally
+        return label;
     }
 
+    private static JTextField createTextField() {
+        JTextField textField = new JTextField(30);
+        textField.setMaximumSize(textField.getPreferredSize()); // prevent stretching, use size specified in constructor
+        textField.setAlignmentX(JPanel.CENTER_ALIGNMENT); // center horizontally
+        return textField;
+    }
+
+    private static JButton createButton(String buttonText) {
+        JButton button = new JButton(buttonText);
+        button.setBounds(150, 200, 220, 50); // set position and size
+        button.setAlignmentX(JPanel.CENTER_ALIGNMENT); // center horizontally
+        return button;
+    }
 }
