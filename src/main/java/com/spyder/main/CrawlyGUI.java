@@ -12,10 +12,13 @@ import javax.swing.JTextField;
 
 public class CrawlyGUI {
 
+    // Static constants for GUI dimensions and spacing
+    private static final int WINDOW_HEIGHT = 230;
+    private static final int WINDOW_WIDTH = 500;
+    private static final int ELEMENT_SPACING = 15;
+
+    // Instance fields
     private static final Logger logger = System.getLogger(CrawlyGUI.class.getName());
-    private static final int PANEL_SPACING = 15;
-    private static final int GUI_WINDOW_HEIGHT = 230;
-    private static final int GUI_WINDOW_WIDTH = 500;
     private JFrame frame;
     private JPanel panel;
     private JLabel urlLabel;
@@ -26,27 +29,13 @@ public class CrawlyGUI {
     private String url;
     private String saveLocation;
 
+    // Constructor
     public CrawlyGUI() {
         buildUserInterface();
         addEventListeners();
     }
 
-    private void addEventListeners() {
-        this.crawlButton.addActionListener(e -> {
-            System.out.println("Button was clicked!");
-            CrawlyGUI.this.url = CrawlyGUI.this.urlField.getText();
-            CrawlyGUI.this.saveLocation = CrawlyGUI.this.saveLocationField.getText();
-            // Set default if not provided
-            if (this.saveLocation == null || this.saveLocation.trim().isEmpty()) {
-                logger.log(Level.INFO, "Save location not specified; defaulting to ./output");
-                this.saveLocation = "./output";
-            }
-            WebPageSaver downloader = new WebPageSaver(CrawlyGUI.this.saveLocation); // create the dependency
-            Crawler crawler = new Crawler(CrawlyGUI.this.url, downloader); // inject dependency
-            crawler.crawl();
-        });
-    }
-
+    // Private methods
     private void buildUserInterface() {
         this.frame = createFrame(); // create the main window
         this.panel = createPanel(); // create panel (container for components)
@@ -59,10 +48,29 @@ public class CrawlyGUI {
         this.frame.setVisible(true); // set frame to visible
     }
 
+    private void addEventListeners() {
+        this.crawlButton.addActionListener(e -> {
+            // Assign user-specified values to instance variables
+            CrawlyGUI.this.url = CrawlyGUI.this.urlField.getText();
+            CrawlyGUI.this.saveLocation = CrawlyGUI.this.saveLocationField.getText();
+
+            // Set saveLocation to default if not provided
+            if (this.saveLocation == null || this.saveLocation.trim().isEmpty()) {
+                logger.log(Level.INFO, "Save location not specified; defaulting to ./output");
+                this.saveLocation = "./output";
+            }
+
+            // Main application logic
+            WebPageSaver downloader = new WebPageSaver(CrawlyGUI.this.saveLocation); // create the dependency
+            Crawler crawler = new Crawler(CrawlyGUI.this.url, downloader); // inject dependency
+            crawler.crawl();
+        });
+    }
+
     private static JFrame createFrame() {
         JFrame frame = new JFrame("Crawly");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // exit application when window is closed
-        frame.setSize(GUI_WINDOW_WIDTH, GUI_WINDOW_HEIGHT); // set window size
+        frame.setSize(WINDOW_WIDTH, WINDOW_HEIGHT); // set window size
         frame.setLocationRelativeTo(null); // center window on screen
         return frame;
     }
@@ -70,7 +78,7 @@ public class CrawlyGUI {
     private static JPanel createPanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS)); // use box layout with vertical stacking
-        panel.add(javax.swing.Box.createVerticalStrut(PANEL_SPACING)); // add some vertical space
+        panel.add(javax.swing.Box.createVerticalStrut(ELEMENT_SPACING)); // add some vertical space
         return panel;
     }
 
@@ -78,24 +86,24 @@ public class CrawlyGUI {
         // create url label
         this.urlLabel = createLabel("Enter URL to crawl:");
         this.panel.add(urlLabel); // add URL label to panel
-        this.panel.add(javax.swing.Box.createVerticalStrut(PANEL_SPACING)); // add some vertical space
+        this.panel.add(javax.swing.Box.createVerticalStrut(ELEMENT_SPACING)); // add some vertical space
 
         // create url field
         this.urlField = createTextField();
         this.panel.add(urlField); // add URL field to panel
-        this.panel.add(javax.swing.Box.createVerticalStrut(PANEL_SPACING)); // add some vertical space
+        this.panel.add(javax.swing.Box.createVerticalStrut(ELEMENT_SPACING)); // add some vertical space
     }
 
     private void initializeSaveLocationComponents() {
         // create save location label
         this.saveLocationLabel = createLabel("Enter save location (optional):");
         this.panel.add(saveLocationLabel); // add save location label to panel
-        this.panel.add(javax.swing.Box.createVerticalStrut(PANEL_SPACING)); // add some vertical space
+        this.panel.add(javax.swing.Box.createVerticalStrut(ELEMENT_SPACING)); // add some vertical space
 
         // create save location field
         this.saveLocationField = createTextField();
         this.panel.add(saveLocationField); // add save location field to panel
-        this.panel.add(javax.swing.Box.createVerticalStrut(PANEL_SPACING)); // add some vertical space
+        this.panel.add(javax.swing.Box.createVerticalStrut(ELEMENT_SPACING)); // add some vertical space
     }
 
     private void initializeCrawlButton() {
