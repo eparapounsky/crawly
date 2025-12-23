@@ -25,9 +25,12 @@ public class CrawlyGUI {
     private JLabel saveLocationLabel;
     private JTextField urlField;
     private JTextField saveLocationField;
-    private JButton crawlButton;
+    private JButton goButton;
+    private JButton stopButton;
     private String url;
     private String saveLocation;
+    // private Crawler crawler;
+    private Thread crawlerThread;
 
     // Constructor
     public CrawlyGUI() {
@@ -42,14 +45,15 @@ public class CrawlyGUI {
 
         initializeUrlComponents();
         initializeSaveLocationComponents();
-        initializeCrawlButton();
+        initializeGoButton();
+        initializeStopButton();
 
         this.frame.add(panel); // add panel to frame
         this.frame.setVisible(true); // set frame to visible
     }
 
     private void addEventListeners() {
-        this.crawlButton.addActionListener(e -> {
+        this.goButton.addActionListener(e -> {
             // Assign user-specified values to instance variables
             CrawlyGUI.this.url = CrawlyGUI.this.urlField.getText();
             CrawlyGUI.this.saveLocation = CrawlyGUI.this.saveLocationField.getText();
@@ -60,10 +64,37 @@ public class CrawlyGUI {
                 this.saveLocation = "./output";
             }
 
-            // Main application logic
-            WebPageSaver downloader = new WebPageSaver(CrawlyGUI.this.saveLocation); // create the dependency
-            Crawler crawler = new Crawler(CrawlyGUI.this.url, downloader); // inject dependency
-            crawler.crawl();
+            // Disable Go button and enable Stop button
+            this.goButton.setEnabled(false);
+            this.stopButton.setEnabled(true);
+
+            // Run crawler in a separate thread to prevent GUI blocking
+            this.crawlerThread = new Thread(() -> {
+                try {
+                    // Main application logic
+                    WebPageSaver downloader = new WebPageSaver(CrawlyGUI.this.saveLocation); // create the dependency
+                    Crawler crawler = new Crawler(CrawlyGUI.this.url, downloader); // inject dependency
+                    crawler.crawl();
+                    logger.log(Level.INFO, "Crawling completed successfully");
+                } catch (Exception ex) {
+                    if (Thread.currentThread().isInterrupted()) {
+                        logger.log(Level.INFO, "Crawling stopped by user");
+                    } else {
+                        logger.log(Level.ERROR, "Error occurred during crawling: {0}", ex.getMessage());
+                    }
+                } finally {
+                    // Enable Go button and disable Stop button in the EDT 
+                    javax.swing.SwingUtilities.invokeLater(() -> {
+                        CrawlyGUI.this.goButton.setEnabled(true);
+                        CrawlyGUI.this.stopButton.setEnabled(false);
+                    });
+                }
+
+            });
+        });
+
+        this.stopButton.addActionListener(e -> {
+
         });
     }
 
@@ -106,9 +137,15 @@ public class CrawlyGUI {
         this.panel.add(javax.swing.Box.createVerticalStrut(ELEMENT_SPACING)); // add some vertical space
     }
 
-    private void initializeCrawlButton() {
-        this.crawlButton = createButton("Go"); // create button
-        this.panel.add(crawlButton); // add button to panel
+    private void initializeGoButton() {
+        this.goButton = createButton("Go"); // create button
+        this.panel.add(goButton); // add button to panel
+    }
+
+    private void initializeStopButton() {
+        this.stopButton = createButton("Stop");
+        this.stopButton.setEnabled(false); // disabled initially, enabled when crawling starts
+        this.panel.add(stopButton);
     }
 
     private static JLabel createLabel(String labelText) {
