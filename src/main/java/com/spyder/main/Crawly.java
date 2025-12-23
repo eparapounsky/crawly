@@ -12,7 +12,8 @@ public class Crawly {
 
         if (args.length == 0) {
             // GUI Mode
-            CrawlyGUI crawlyGUI = new CrawlyGUI();
+            @SuppressWarnings("unused")
+            CrawlyGUI gui = new CrawlyGUI();
         } else {
             // Command-Line Mode
             String url = getUrl(args);
