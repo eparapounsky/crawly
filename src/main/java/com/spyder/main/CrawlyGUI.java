@@ -13,7 +13,7 @@ import javax.swing.JTextField;
 public class CrawlyGUI {
 
     // Static constants for GUI dimensions and spacing
-    private static final int WINDOW_HEIGHT = 230;
+    private static final int WINDOW_HEIGHT = 240;
     private static final int WINDOW_WIDTH = 500;
     private static final int ELEMENT_SPACING = 15;
 
@@ -45,12 +45,11 @@ public class CrawlyGUI {
     // Private methods
     private void buildUserInterface() {
         this.frame = createFrame(); // create the main window
-        this.panel = createPanel(); // create panel (container for components)
+        this.panel = createVerticalPanel(); // create panel (container for components)
 
         initializeUrlComponents();
         initializeSaveLocationComponents();
-        initializeGoButton();
-        initializeStopButton();
+        initializeButtons();
 
         this.frame.add(panel); // add panel to frame
         this.frame.setVisible(true); // set frame to visible
@@ -122,7 +121,7 @@ public class CrawlyGUI {
         return frame;
     }
 
-    private static JPanel createPanel() {
+    private static JPanel createVerticalPanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS)); // use box layout with vertical stacking
         panel.add(javax.swing.Box.createVerticalStrut(ELEMENT_SPACING)); // add some vertical space
@@ -150,18 +149,27 @@ public class CrawlyGUI {
         // create save location field
         this.saveLocationField = createTextField();
         this.panel.add(saveLocationField); // add save location field to panel
-        this.panel.add(javax.swing.Box.createVerticalStrut(ELEMENT_SPACING)); // add some vertical space
     }
 
-    private void initializeGoButton() {
-        this.goButton = createButton("Go"); // create button
-        this.panel.add(goButton); // add button to panel
-    }
-
-    private void initializeStopButton() {
+    private void initializeButtons() {
+        // create Go and Stop buttons
+        this.goButton = createButton("Go");
         this.stopButton = createButton("Stop");
         this.stopButton.setEnabled(false); // disabled initially, enabled when crawling starts
-        this.panel.add(stopButton);
+
+        // create a horizontal panel for the buttons
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS)); // use box layout with horizontal stacking
+        buttonPanel.setAlignmentX(JPanel.CENTER_ALIGNMENT); // center horizontally
+
+        // add buttons to the button panel
+        buttonPanel.add(this.goButton);
+        buttonPanel.add(javax.swing.Box.createHorizontalStrut(ELEMENT_SPACING)); // add some horizontal space
+        buttonPanel.add(this.stopButton);
+
+        // add the button panel to the main panel
+        this.panel.add(javax.swing.Box.createVerticalStrut(ELEMENT_SPACING)); // add some vertical space
+        this.panel.add(buttonPanel);
     }
 
     private static JLabel createLabel(String labelText) {
