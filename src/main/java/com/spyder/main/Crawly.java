@@ -30,7 +30,7 @@ public class Crawly {
                 logger.log(Level.ERROR, "Stack trace:", e);
             }
 
-            logger.log(Level.INFO, "Crawly finished");
+            logger.log(Level.INFO, "Crawling completed successfully");
         }
 
     }
