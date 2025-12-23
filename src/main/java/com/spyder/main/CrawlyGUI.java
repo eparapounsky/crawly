@@ -18,7 +18,10 @@ public class CrawlyGUI {
     private static final int ELEMENT_SPACING = 15;
 
     // Instance fields
+    // Logger
     private static final Logger logger = System.getLogger(CrawlyGUI.class.getName());
+
+    // GUI Components
     private JFrame frame;
     private JPanel panel;
     private JLabel urlLabel;
@@ -27,9 +30,10 @@ public class CrawlyGUI {
     private JTextField saveLocationField;
     private JButton goButton;
     private JButton stopButton;
+
+    // Application state
     private String url;
     private String saveLocation;
-    // private Crawler crawler;
     private Thread crawlerThread;
 
     // Constructor
@@ -69,27 +73,7 @@ public class CrawlyGUI {
             CrawlyGUI.this.stopButton.setEnabled(true);
 
             // Run crawler in a separate thread to prevent GUI blocking
-            this.crawlerThread = new Thread(() -> {
-                try {
-                    // Main application logic
-                    WebPageSaver downloader = new WebPageSaver(CrawlyGUI.this.saveLocation); // create the dependency
-                    Crawler crawler = new Crawler(CrawlyGUI.this.url, downloader); // inject dependency
-                    crawler.crawl();
-                    logger.log(Level.INFO, "Crawling completed successfully");
-                } catch (Exception ex) {
-                    // Check if error message matches the custom interruption message; if so, do not log as an error
-                    if (!ex.getMessage().contains("interrupted")) {
-                        logger.log(Level.ERROR, "Error occurred during crawling: {0}", ex.getMessage());
-                    }
-                } finally {
-                    // Enable Go button and disable Stop button in the EDT 
-                    javax.swing.SwingUtilities.invokeLater(() -> {
-                        CrawlyGUI.this.goButton.setEnabled(true);
-                        CrawlyGUI.this.stopButton.setEnabled(false);
-                    });
-                }
-
-            });
+            runCrawlerInThread();
         });
 
         this.stopButton.addActionListener(e -> {
@@ -102,6 +86,32 @@ public class CrawlyGUI {
                 CrawlyGUI.this.stopButton.setEnabled(false);
             }
         });
+    }
+
+    private void runCrawlerInThread() {
+        this.crawlerThread = new Thread(() -> {
+            try {
+                // Main application logic
+                WebPageSaver downloader = new WebPageSaver(CrawlyGUI.this.saveLocation); // create the dependency
+                Crawler crawler = new Crawler(CrawlyGUI.this.url, downloader); // inject dependency
+                crawler.crawl();
+                logger.log(Level.INFO, "Crawling completed successfully");
+            } catch (Exception ex) {
+                // Check if error message matches the custom interruption message; if so, do not log as an error
+                if (!ex.getMessage().contains("interrupted")) {
+                    logger.log(Level.ERROR, "Error occurred during crawling: {0}", ex.getMessage());
+                }
+            } finally {
+                // Enable Go button and disable Stop button in the EDT 
+                javax.swing.SwingUtilities.invokeLater(() -> {
+                    CrawlyGUI.this.goButton.setEnabled(true);
+                    CrawlyGUI.this.stopButton.setEnabled(false);
+                });
+            }
+
+        });
+
+        this.crawlerThread.start();
     }
 
     private static JFrame createFrame() {
