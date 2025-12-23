@@ -66,6 +66,12 @@ public class Crawler {
             }
 
             for (Element link : links) {
+                // Check for thread interruption before processing each link (allow graceful shutdown + responsive GUI)
+                if (Thread.currentThread().isInterrupted()) {
+                    logger.log(Level.INFO, "Crawling interrupted while processing links");
+                    throw new RuntimeException("Crawling interrupted");
+                }
+
                 String currentLink = link.attr("abs:href");
 
                 // prevent null or empty links
