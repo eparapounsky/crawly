@@ -65,8 +65,8 @@ public class CrawlyGUI {
             }
 
             // Disable Go button and enable Stop button
-            this.goButton.setEnabled(false);
-            this.stopButton.setEnabled(true);
+            CrawlyGUI.this.goButton.setEnabled(false);
+            CrawlyGUI.this.stopButton.setEnabled(true);
 
             // Run crawler in a separate thread to prevent GUI blocking
             this.crawlerThread = new Thread(() -> {
@@ -77,9 +77,8 @@ public class CrawlyGUI {
                     crawler.crawl();
                     logger.log(Level.INFO, "Crawling completed successfully");
                 } catch (Exception ex) {
-                    if (Thread.currentThread().isInterrupted()) {
-                        logger.log(Level.INFO, "Crawling stopped by user");
-                    } else {
+                    // Check if error message matches the custom interruption message; if so, do not log as an error
+                    if (!ex.getMessage().contains("interrupted")) {
                         logger.log(Level.ERROR, "Error occurred during crawling: {0}", ex.getMessage());
                     }
                 } finally {
@@ -94,7 +93,14 @@ public class CrawlyGUI {
         });
 
         this.stopButton.addActionListener(e -> {
+            if (this.crawlerThread != null && this.crawlerThread.isAlive()) {
+                logger.log(Level.INFO, "Crawling stopped by user");
+                this.crawlerThread.interrupt();
 
+                // Enable Go button and disable Stop button
+                CrawlyGUI.this.goButton.setEnabled(true);
+                CrawlyGUI.this.stopButton.setEnabled(false);
+            }
         });
     }
 
