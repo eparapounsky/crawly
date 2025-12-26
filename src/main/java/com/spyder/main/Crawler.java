@@ -15,10 +15,13 @@ import org.jsoup.select.Elements;
 
 public class Crawler {
 
-    private final String url;
-    private final WebPageSaver webPageSaver;
+    // Static fields
     private static final Logger logger = System.getLogger(Crawler.class.getName());
     private static final int MAX_CRAWL_DEPTH = 10;
+
+    // Instance fields
+    private final String url;
+    private final WebPageSaver webPageSaver;
 
     public Crawler(String url, WebPageSaver webPageSaver) {
         // validate URL format before assignment
@@ -32,7 +35,7 @@ public class Crawler {
 
     public void crawl() {
         try {
-            Set<String> visitedUrls = new HashSet<>();
+            Set<String> visitedUrls = new HashSet<>(); // HashSet for O(1) lookups
             crawlHelper(url, visitedUrls, MAX_CRAWL_DEPTH);
         } catch (Exception e) {
             // use concatenation to include exception message
