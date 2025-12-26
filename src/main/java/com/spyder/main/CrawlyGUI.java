@@ -129,7 +129,11 @@ public class CrawlyGUI {
         }
     }
 
-    // Business logic
+    /**
+     * Executes the web crawling operation in a separate background thread. This
+     * method creates and starts a new thread that performs the main crawling
+     * logic, allowing the GUI to remain responsive during the operation.
+     */
     private void runCrawlerInThread() {
         this.crawlerThread = new Thread(() -> {
             try {
@@ -145,6 +149,7 @@ public class CrawlyGUI {
                 }
             } finally {
                 // Enable Go button and disable Stop button in the EDT 
+                // Use SwingUtilities.invokeLater to ensure thread safety
                 javax.swing.SwingUtilities.invokeLater(() -> {
                     this.goButton.setEnabled(true);
                     this.stopButton.setEnabled(false);
