@@ -23,8 +23,8 @@ public class Crawly {
 
             // Main application logic
             try {
-                WebPageSaver downloader = new WebPageSaver(saveLocation); // create the dependency
-                Crawler crawler = new Crawler(url, downloader); // inject dependency
+                WebPageSaver webPageSaver = new WebPageSaver(saveLocation); // create the dependency
+                Crawler crawler = new Crawler(url, webPageSaver); // inject dependency
                 crawler.crawl();
             } catch (Exception e) {
                 logger.log(Level.ERROR, "Error occurred during crawling: {0}", e.getMessage());
