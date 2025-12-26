@@ -134,8 +134,8 @@ public class CrawlyGUI {
         this.crawlerThread = new Thread(() -> {
             try {
                 // Main application logic
-                WebPageSaver downloader = new WebPageSaver(this.saveLocation); // create the dependency
-                Crawler crawler = new Crawler(this.url, downloader); // inject dependency
+                WebPageSaver webPageSaver = new WebPageSaver(this.saveLocation); // create the dependency
+                Crawler crawler = new Crawler(this.url, webPageSaver); // inject dependency
                 crawler.crawl();
                 logger.log(Level.INFO, "Crawling completed successfully");
             } catch (Exception ex) {
