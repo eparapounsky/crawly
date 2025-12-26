@@ -43,7 +43,7 @@ public class CrawlyGUI {
         addEventListeners();
     }
 
-    // Private methods
+    // UI setup methods
     private void buildUserInterface() {
         this.frame = createFrame(); // create the main window
         this.mainPanel = createVerticalPanel();
@@ -58,46 +58,78 @@ public class CrawlyGUI {
         frame.setVisible(true); // set frame to visible
     }
 
-    private void addEventListeners() {
-        handleGoButtonClick();
-        handleStopButtonClick();
+    private void initializeUrlComponents() {
+        // create url label
+        this.urlLabel = createLabel("Enter URL to crawl:");
+        this.mainPanel.add(urlLabel); // add URL label to panel
+        this.mainPanel.add(javax.swing.Box.createVerticalStrut(ELEMENT_SPACING)); // add some vertical space
+
+        // create url field
+        this.urlField = createTextField();
+        this.mainPanel.add(urlField); // add URL field to panel
+        this.mainPanel.add(javax.swing.Box.createVerticalStrut(ELEMENT_SPACING)); // add some vertical space
     }
 
-    private void handleStopButtonClick() {
-        this.stopButton.addActionListener(e -> {
-            // Although the thread can't be null here due to the button state, check to be safe
-            if (this.crawlerThread != null && this.crawlerThread.isAlive()) {
-                logger.log(Level.INFO, "Crawling stopped by user");
-                this.crawlerThread.interrupt();
+    private void initializeSaveLocationComponents() {
+        // create save location label
+        this.saveLocationLabel = createLabel("Enter save location (optional):");
+        this.mainPanel.add(saveLocationLabel); // add save location label to panel
+        this.mainPanel.add(javax.swing.Box.createVerticalStrut(ELEMENT_SPACING)); // add some vertical space
 
-                // Enable Go button and disable Stop button
-                CrawlyGUI.this.goButton.setEnabled(true);
-                CrawlyGUI.this.stopButton.setEnabled(false);
-            }
-        });
+        // create save location field
+        this.saveLocationField = createTextField();
+        this.mainPanel.add(saveLocationField); // add save location field to panel
+    }
+
+    private void initializeButtons() {
+        // create Go and Stop buttons
+        this.goButton = createButton("Go");
+        this.stopButton = createButton("Stop");
+        this.stopButton.setEnabled(false); // disabled initially, enabled when crawling starts
+
+        // add buttons to the button panel
+        this.buttonPanel.add(this.goButton);
+        this.buttonPanel.add(javax.swing.Box.createHorizontalStrut(ELEMENT_SPACING)); // add some horizontal space
+        this.buttonPanel.add(this.stopButton);
+    }
+
+    private void addEventListeners() {
+        this.goButton.addActionListener(e -> handleGoButtonClick());
+        this.stopButton.addActionListener(e -> handleStopButtonClick());
     }
 
     private void handleGoButtonClick() {
-        this.goButton.addActionListener(e -> {
-            // Assign user-specified values to instance variables
-            CrawlyGUI.this.url = CrawlyGUI.this.urlField.getText();
-            CrawlyGUI.this.saveLocation = CrawlyGUI.this.saveLocationField.getText();
+        // Assign user-specified values to instance variables
+        CrawlyGUI.this.url = CrawlyGUI.this.urlField.getText();
+        CrawlyGUI.this.saveLocation = CrawlyGUI.this.saveLocationField.getText();
 
-            // Set saveLocation to default if not provided
-            if (this.saveLocation == null || this.saveLocation.trim().isEmpty()) {
-                logger.log(Level.INFO, "Save location not specified; defaulting to ./output");
-                this.saveLocation = "./output";
-            }
+        // Set saveLocation to default if not provided
+        if (this.saveLocation == null || this.saveLocation.trim().isEmpty()) {
+            logger.log(Level.INFO, "Save location not specified; defaulting to ./output");
+            this.saveLocation = "./output";
+        }
 
-            // Disable Go button and enable Stop button
-            CrawlyGUI.this.goButton.setEnabled(false);
-            CrawlyGUI.this.stopButton.setEnabled(true);
+        // Disable Go button and enable Stop button
+        CrawlyGUI.this.goButton.setEnabled(false);
+        CrawlyGUI.this.stopButton.setEnabled(true);
 
-            // Run crawler in a separate thread to prevent GUI blocking
-            runCrawlerInThread();
-        });
+        // Run crawler in a separate thread to prevent GUI blocking
+        runCrawlerInThread();
     }
 
+    private void handleStopButtonClick() {
+        // Although the thread can't be null here due to the button state, check to be safe
+        if (this.crawlerThread != null && this.crawlerThread.isAlive()) {
+            logger.log(Level.INFO, "Crawling stopped by user");
+            this.crawlerThread.interrupt();
+
+            // Enable Go button and disable Stop button
+            CrawlyGUI.this.goButton.setEnabled(true);
+            CrawlyGUI.this.stopButton.setEnabled(false);
+        }
+    }
+
+    // Business logic
     private void runCrawlerInThread() {
         this.crawlerThread = new Thread(() -> {
             try {
@@ -144,41 +176,6 @@ public class CrawlyGUI {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS)); // use box layout with horizontal stacking
         return panel;
-    }
-
-    private void initializeUrlComponents() {
-        // create url label
-        this.urlLabel = createLabel("Enter URL to crawl:");
-        this.mainPanel.add(urlLabel); // add URL label to panel
-        this.mainPanel.add(javax.swing.Box.createVerticalStrut(ELEMENT_SPACING)); // add some vertical space
-
-        // create url field
-        this.urlField = createTextField();
-        this.mainPanel.add(urlField); // add URL field to panel
-        this.mainPanel.add(javax.swing.Box.createVerticalStrut(ELEMENT_SPACING)); // add some vertical space
-    }
-
-    private void initializeSaveLocationComponents() {
-        // create save location label
-        this.saveLocationLabel = createLabel("Enter save location (optional):");
-        this.mainPanel.add(saveLocationLabel); // add save location label to panel
-        this.mainPanel.add(javax.swing.Box.createVerticalStrut(ELEMENT_SPACING)); // add some vertical space
-
-        // create save location field
-        this.saveLocationField = createTextField();
-        this.mainPanel.add(saveLocationField); // add save location field to panel
-    }
-
-    private void initializeButtons() {
-        // create Go and Stop buttons
-        this.goButton = createButton("Go");
-        this.stopButton = createButton("Stop");
-        this.stopButton.setEnabled(false); // disabled initially, enabled when crawling starts
-
-        // add buttons to the button panel
-        this.buttonPanel.add(this.goButton);
-        this.buttonPanel.add(javax.swing.Box.createHorizontalStrut(ELEMENT_SPACING)); // add some horizontal space
-        this.buttonPanel.add(this.stopButton);
     }
 
     private static JLabel createLabel(String labelText) {
