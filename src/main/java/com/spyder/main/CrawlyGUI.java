@@ -29,7 +29,7 @@ public class CrawlyGUI {
     private JLabel saveLocationLabel;
     private JTextField urlField;
     private JTextField saveLocationField;
-    private JButton goButton;
+    private JButton startButton;
     private JButton stopButton;
 
     // Application state
@@ -82,23 +82,23 @@ public class CrawlyGUI {
     }
 
     private void initializeButtons() {
-        // create Go and Stop buttons
-        this.goButton = createButton("Go");
+        // create Start and Stop buttons
+        this.startButton = createButton("Start");
         this.stopButton = createButton("Stop");
         this.stopButton.setEnabled(false); // disabled initially, enabled when crawling starts
 
         // add buttons to the button panel
-        this.buttonPanel.add(this.goButton);
+        this.buttonPanel.add(this.startButton);
         this.buttonPanel.add(javax.swing.Box.createHorizontalStrut(ELEMENT_SPACING)); // add some horizontal space
         this.buttonPanel.add(this.stopButton);
     }
 
     private void addEventListeners() {
-        this.goButton.addActionListener(e -> handleGoButtonClick());
+        this.startButton.addActionListener(e -> handleStartButtonClick());
         this.stopButton.addActionListener(e -> handleStopButtonClick());
     }
 
-    private void handleGoButtonClick() {
+    private void handleStartButtonClick() {
         // Assign user-specified values to instance variables
         CrawlyGUI.this.url = CrawlyGUI.this.urlField.getText();
         CrawlyGUI.this.saveLocation = CrawlyGUI.this.saveLocationField.getText();
@@ -109,8 +109,8 @@ public class CrawlyGUI {
             this.saveLocation = "./output";
         }
 
-        // Disable Go button and enable Stop button
-        CrawlyGUI.this.goButton.setEnabled(false);
+        // Disable Start button and enable Stop button
+        CrawlyGUI.this.startButton.setEnabled(false);
         CrawlyGUI.this.stopButton.setEnabled(true);
 
         // Run crawler in a separate thread to prevent GUI blocking
@@ -123,8 +123,8 @@ public class CrawlyGUI {
             logger.log(Level.INFO, "Crawling stopped by user");
             this.crawlerThread.interrupt();
 
-            // Enable Go button and disable Stop button
-            CrawlyGUI.this.goButton.setEnabled(true);
+            // Enable Start button and disable Stop button
+            CrawlyGUI.this.startButton.setEnabled(true);
             CrawlyGUI.this.stopButton.setEnabled(false);
         }
     }
@@ -148,10 +148,10 @@ public class CrawlyGUI {
                     logger.log(Level.ERROR, "Error occurred during crawling: {0}", ex.getMessage());
                 }
             } finally {
-                // Enable Go button and disable Stop button in the EDT 
+                // Enable Start button and disable Stop button in the EDT 
                 // Use SwingUtilities.invokeLater to ensure thread safety
                 javax.swing.SwingUtilities.invokeLater(() -> {
-                    this.goButton.setEnabled(true);
+                    this.startButton.setEnabled(true);
                     this.stopButton.setEnabled(false);
                 });
             }
