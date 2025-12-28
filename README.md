@@ -28,7 +28,7 @@ Download `Crawly.jar` from Releases and run it using Java:
 java -jar Crawly.jar
 ```
 
-The application will prompt you to enter a website URL and save location.
+Launches the graphical user interface (GUI) with input fields for URL and save location, plus start/stop crawling controls.
 
 #### Command Line Mode (with arguments)
 
@@ -45,7 +45,7 @@ java -jar Crawly.jar http://example.com ./downloads
 
 ### Option 2: Run the Windows Executable
 
-Download `Crawly.exe` from Releases and double-click to launch. A console window will open and prompt you to enter a website URL and a save location.
+Download `Crawly.exe` from Releases and double-click to launch the GUI application with interactive controls for starting and stopping crawls.
 
 #### Command Line Mode (with arguments)
 
@@ -68,21 +68,24 @@ The `crawly.exe` file was created using [Launch4j](https://launch4j.sourceforge.
 
 ## Current Features
 
-- Connect to and parse websites using JSoup
-- Download HTML content to local files
-- Recursive crawling with depth limit
-- Download and save images locally
-- Rewrite URLs in HTML to point to local files
-- Domain-restricted crawling (stays within original domain)
+- **Dual Interface**: Command-line and GUI modes
+- **Domain Restriction**: Only follows links within the original domain to prevent external crawling
+- **Offline Browsing**: Downloads HTML content and rewrites URLs to point to local files
+- **Image Handling**: Downloads and saves images locally with centralized organization
+- **Path Preservation**: Maintains website directory structure in local filesystem
+- **Interruption Support**: GUI allows graceful start/stop of crawling operations
 
 ## Planned Features
 
-- Configurable crawl depth
-- GUI
+- Crawling progress indicators
+- Configurable crawl depth limits
+- Enhanced file type support
 
 ## Technologies Used
 
-- **Java 25** - Core programming language
+- **Java 11+** - Core programming language (compiled for Java 11, tested with newer versions)
 - **JSoup 1.17.2** - HTML parsing and web scraping
 - **Maven** - Dependency management and build tool
+- **Swing** - GUI framework for desktop interface
+- **JUnit 5** - Testing framework with embedded HTTP server
 - **Launch4j** - Java executable wrapper for Windows
