@@ -1,7 +1,5 @@
 # Crawly
 
-**This project is still under construction.**
-
 A Java-based web crawler for downloading websites to browse offline.
 
 ## Usage
