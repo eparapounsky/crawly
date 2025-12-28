@@ -60,7 +60,8 @@
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
                     <finalName>crawly</finalName>
-                    <appendAssemblyId>false</appendAssemblyId>
+                    <!-- whether filename has jar-with-dependencies suffix -->
+                    <appendAssemblyId>true</appendAssemblyId>
                 </configuration>
                 <executions>
                     <execution>
