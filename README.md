@@ -1,6 +1,6 @@
 # Crawly
 
-A Java-based web crawler for downloading websites to browse offline.
+A Java web crawler and scraper for creating offline website archives. Recursively downloads pages and images within a domain, rewrites links for local browsing, and runs with either command-line arguments or a GUI interface.
 
 ## Usage
 
@@ -13,51 +13,30 @@ A Java-based web crawler for downloading websites to browse offline.
 
 You can download Crawly from the [Releases](../../releases) page in two formats:
 
-1. **Crawly.jar** - Java JAR file (cross-platform)
+1. **crawly-jar-with-dependencies.jar** - Java JAR file (cross-platform)
 2. **Crawly.exe** - Windows executable (Windows x86 users only)
 
 ### Option 1: Run the JAR File
 
-Download `Crawly.jar` from Releases and run it using Java:
-
-#### Interactive Mode
-
-```bash
-java -jar Crawly.jar
-```
-
-Launches the graphical user interface (GUI) with input fields for URL and save location, plus start/stop crawling controls.
+Download `crawly-jar-with-dependencies.jar` from Releases and run it using Java:
 
 #### Command Line Mode (with arguments)
 
 ```bash
-java -jar Crawly.jar <url> [save-location]
+java -jar crawly-jar-with-dependencies.jar <url> [save-location]
 ```
 
 Examples:
 
 ```bash
-java -jar Crawly.jar http://example.com
-java -jar Crawly.jar http://example.com ./downloads
+java -jar crawly-jar-with-dependencies.jar http://example.com
+java -jar crawly-jar-with-dependencies.jar http://example.com ./downloads
 ```
 
 ### Option 2: Run the Windows Executable
 
-Download `Crawly.exe` from Releases and double-click to launch the GUI application with interactive controls for starting and stopping crawls.
+Download `Crawly.exe` from Releases and double-click to launch the GUI application.
 
-#### Command Line Mode (with arguments)
-
-You can also pass arguments directly to the executable:
-
-```bash
-Crawly.exe <url> [save-location]
-```
-
-Examples:
-
-```bash
-Crawly.exe http://example.com
-Crawly.exe http://example.com ./downloads
 ```
 
 ### About the Windows Executable
@@ -87,3 +66,4 @@ The `crawly.exe` file was created using [Launch4j](https://launch4j.sourceforge.
 - **Swing** - GUI framework for desktop interface
 - **JUnit 5** - Testing framework with embedded HTTP server
 - **Launch4j** - Java executable wrapper for Windows
+```
