@@ -37,8 +37,6 @@ java -jar crawly-jar-with-dependencies.jar http://example.com ./downloads
 
 Download `Crawly.exe` from Releases and double-click to launch the GUI application.
 
-```
-
 ### About the Windows Executable
 
 The `crawly.exe` file was created using [Launch4j](https://launch4j.sourceforge.net/), a Java executable wrapper. Launch4j allows Java applications to be packaged as native Windows executables, providing a more user-friendly experience by eliminating the need to manually invoke Java from the command line. The executable automatically detects your Java installation and launches the application with the appropriate Java runtime.
@@ -66,4 +64,3 @@ The `crawly.exe` file was created using [Launch4j](https://launch4j.sourceforge.
 - **Swing** - GUI framework for desktop interface
 - **JUnit 5** - Testing framework with embedded HTTP server
 - **Launch4j** - Java executable wrapper for Windows
-```
