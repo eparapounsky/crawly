@@ -1,5 +1,6 @@
 package com.spyder.main;
 
+import java.awt.Color;
 import java.lang.System.Logger;
 import java.lang.System.Logger.Level;
 
@@ -9,11 +10,12 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.Timer;
 
 public class CrawlyGUI {
 
     // Static constants for GUI dimensions and spacing
-    private static final int WINDOW_HEIGHT = 240;
+    private static final int WINDOW_HEIGHT = 280;
     private static final int WINDOW_WIDTH = 500;
     private static final int ELEMENT_SPACING = 15;
 
@@ -29,6 +31,7 @@ public class CrawlyGUI {
     private JLabel saveLocationLabel;
     private JTextField urlField;
     private JTextField saveLocationField;
+    private JLabel statusLabel;
     private JButton startButton;
     private JButton stopButton;
 
@@ -36,11 +39,13 @@ public class CrawlyGUI {
     private String url;
     private String saveLocation;
     private Thread crawlerThread;
+    private Timer statusTimer;
 
     // Constructor
     public CrawlyGUI() {
         buildUserInterface();
         addEventListeners();
+        startStatusTimer();
     }
 
     // UI setup methods
@@ -51,9 +56,11 @@ public class CrawlyGUI {
 
         initializeUrlComponents();
         initializeSaveLocationComponents();
+        initializeStatusSection();
         initializeButtons();
 
         frame.add(mainPanel);
+        mainPanel.add(this.statusLabel);
         mainPanel.add(buttonPanel); // keep buttons in vertical flow with input fields
         frame.setVisible(true); // set frame to visible
     }
@@ -79,6 +86,13 @@ public class CrawlyGUI {
         // create save location field
         this.saveLocationField = createTextField();
         this.mainPanel.add(saveLocationField); // add save location field to panel
+    }
+
+    private void initializeStatusSection() {
+        this.mainPanel.add(javax.swing.Box.createVerticalStrut(ELEMENT_SPACING)); // add some vertical space
+        this.statusLabel = createLabel("Ready to crawl");
+        this.statusLabel.setBackground(Color.WHITE);
+        this.statusLabel.setForeground(Color.RED);
     }
 
     private void initializeButtons() {
@@ -126,7 +140,22 @@ public class CrawlyGUI {
             // Enable Start button and disable Stop button
             CrawlyGUI.this.startButton.setEnabled(true);
             CrawlyGUI.this.stopButton.setEnabled(false);
+            // Stop timer to prevent status from changing
+            this.statusTimer.stop();
+            // Reset status message
+            this.statusLabel.setText("Ready to crawl");
         }
+    }
+
+    private void startStatusTimer() {
+        this.statusTimer = new Timer(500, e -> {
+            String currentUrl = Crawler.currentUrlBeingProcessed;
+
+            if (currentUrl != null && !currentUrl.isEmpty()) {
+                statusLabel.setText("Currently processing: " + currentUrl);
+            }
+        });
+        statusTimer.start();
     }
 
     /**
