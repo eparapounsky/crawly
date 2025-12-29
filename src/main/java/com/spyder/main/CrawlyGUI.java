@@ -18,6 +18,8 @@ public class CrawlyGUI {
     private static final int WINDOW_HEIGHT = 280;
     private static final int WINDOW_WIDTH = 500;
     private static final int ELEMENT_SPACING = 15;
+    private static final Color STATUS_LABEL_TEXT_COLOR = Color.RED;
+    private static final Color STATUS_LABEL_BACKGROUND_COLOR = Color.WHITE;
 
     // Instance fields
     // Logger
@@ -91,8 +93,8 @@ public class CrawlyGUI {
     private void initializeStatusSection() {
         this.mainPanel.add(javax.swing.Box.createVerticalStrut(ELEMENT_SPACING)); // add some vertical space
         this.statusLabel = createLabel("Ready to crawl");
-        this.statusLabel.setBackground(Color.WHITE);
-        this.statusLabel.setForeground(Color.RED);
+        this.statusLabel.setBackground(STATUS_LABEL_BACKGROUND_COLOR);
+        this.statusLabel.setForeground(STATUS_LABEL_TEXT_COLOR);
     }
 
     private void initializeButtons() {
