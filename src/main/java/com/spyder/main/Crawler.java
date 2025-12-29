@@ -16,6 +16,7 @@ import org.jsoup.select.Elements;
 public class Crawler {
 
     // Static fields
+    public static String currentUrlBeingProcessed;
     private static final Logger logger = System.getLogger(Crawler.class.getName());
     private static final int MAX_CRAWL_DEPTH = 10;
 
@@ -56,6 +57,7 @@ public class Crawler {
             // Store parsed HTML in memory ("webpage" variable), not on the disk yet, 
             // because we need to modify it before saving it.
             // This is more efficient than writing to the disk and reading back.
+            Crawler.currentUrlBeingProcessed = url; // update to pass to GUI
             Document webpage = Jsoup.connect(url).get();
             webPageSaver.saveWebPage(webpage, url);
             visitedUrls.add(url);
