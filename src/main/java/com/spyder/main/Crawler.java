@@ -58,6 +58,8 @@ public class Crawler {
             // because we need to modify it before saving it.
             // This is more efficient than writing to the disk and reading back.
             Crawler.currentUrlBeingProcessed = url; // update to pass to GUI
+            logger.log(Level.INFO, "Currently processing: {0}", url); // show current URL in console mode
+
             Document webpage = Jsoup.connect(url).get();
             webPageSaver.saveWebPage(webpage, url);
             visitedUrls.add(url);
