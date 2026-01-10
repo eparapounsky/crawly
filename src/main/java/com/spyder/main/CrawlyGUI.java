@@ -12,6 +12,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 public class CrawlyGUI {
@@ -152,6 +153,15 @@ public class CrawlyGUI {
             this.saveLocation = "./output";
         }
 
+        // Clear list area for new crawl
+        clearUrlList();
+
+        // Restart the status timer if it's not running
+        // Handles re-using the same GUI instance
+        if (!this.statusTimer.isRunning()) {
+            this.statusTimer.start();
+        }
+
         // Disable Start button and enable Stop button
         CrawlyGUI.this.startButton.setEnabled(false);
         CrawlyGUI.this.stopButton.setEnabled(true);
@@ -176,6 +186,8 @@ public class CrawlyGUI {
         }
     }
 
+    private String lastProcessedUrl = "";
+
     /**
      * Starts a timer that periodically updates the display with the current URL
      * being processed. The timer fires every 500 milliseconds and retrieves the
@@ -183,14 +195,27 @@ public class CrawlyGUI {
      * information to the user.
      */
     private void startStatusTimer() {
-        this.statusTimer = new Timer(500, e -> {
+        this.statusTimer = new Timer(200, e -> {
             String currentUrl = Crawler.currentUrlBeingProcessed;
 
-            // if (currentUrl != null && !currentUrl.isEmpty()) {
-            //     statusLabel.setText("Currently processing: " + currentUrl);
-            // }
+            // add url to list if different from last
+            if (currentUrl != null && !currentUrl.isEmpty() && !currentUrl.equals(lastProcessedUrl)) {
+                SwingUtilities.invokeLater(() -> {
+                    this.urlListArea.append(currentUrl + "\n");
+                    this.urlListArea.setCaretPosition(urlListArea.getDocument().getLength()); // auto scroll to the bottom of the list to show the most recent url
+                });
+
+                lastProcessedUrl = currentUrl; // update for next comparison
+            }
         });
         statusTimer.start();
+    }
+
+    private void clearUrlList() {
+        SwingUtilities.invokeLater(() -> {
+            this.urlListArea.setText("");
+            lastProcessedUrl = "";
+        });
     }
 
     /**
@@ -221,7 +246,6 @@ public class CrawlyGUI {
             }
 
         });
-
         this.crawlerThread.start();
     }
 
