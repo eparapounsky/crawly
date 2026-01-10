@@ -1,6 +1,5 @@
 package com.spyder.main;
 
-import java.awt.Color;
 import java.lang.System.Logger;
 import java.lang.System.Logger.Level;
 
@@ -15,11 +14,11 @@ import javax.swing.Timer;
 public class CrawlyGUI {
 
     // Static constants for GUI dimensions and spacing
-    private static final int WINDOW_HEIGHT = 280;
+    private static final int WINDOW_HEIGHT = 450;
     private static final int WINDOW_WIDTH = 500;
     private static final int ELEMENT_SPACING = 15;
-    private static final Color STATUS_LABEL_TEXT_COLOR = Color.RED;
-    private static final Color STATUS_LABEL_BACKGROUND_COLOR = Color.WHITE;
+    // private static final Color STATUS_LABEL_TEXT_COLOR = Color.RED;
+    // private static final Color STATUS_LABEL_BACKGROUND_COLOR = Color.WHITE;
 
     // Instance fields
     // Logger
@@ -33,7 +32,7 @@ public class CrawlyGUI {
     private JLabel saveLocationLabel;
     private JTextField urlField;
     private JTextField saveLocationField;
-    private JLabel statusLabel;
+    // private JLabel statusLabel;
     private JButton startButton;
     private JButton stopButton;
 
@@ -58,11 +57,11 @@ public class CrawlyGUI {
 
         initializeUrlComponents();
         initializeSaveLocationComponents();
-        initializeStatusSection();
+        // initializeStatusSection();
         initializeButtons();
 
         frame.add(mainPanel);
-        mainPanel.add(this.statusLabel);
+        // mainPanel.add(this.statusLabel);
         mainPanel.add(buttonPanel); // keep buttons in vertical flow with input fields
         frame.setVisible(true); // set frame to visible
     }
@@ -90,12 +89,12 @@ public class CrawlyGUI {
         this.mainPanel.add(saveLocationField); // add save location field to panel
     }
 
-    private void initializeStatusSection() {
-        this.mainPanel.add(javax.swing.Box.createVerticalStrut(ELEMENT_SPACING)); // add some vertical space
-        this.statusLabel = createLabel("Ready to crawl");
-        this.statusLabel.setBackground(STATUS_LABEL_BACKGROUND_COLOR);
-        this.statusLabel.setForeground(STATUS_LABEL_TEXT_COLOR);
-    }
+    // private void initializeStatusSection() {
+    //     this.mainPanel.add(javax.swing.Box.createVerticalStrut(ELEMENT_SPACING)); // add some vertical space
+    //     this.statusLabel = createLabel("Ready to crawl");
+    //     this.statusLabel.setBackground(STATUS_LABEL_BACKGROUND_COLOR);
+    //     this.statusLabel.setForeground(STATUS_LABEL_TEXT_COLOR);
+    // }
 
     private void initializeButtons() {
         // create Start and Stop buttons
@@ -145,17 +144,23 @@ public class CrawlyGUI {
             // Stop timer to prevent status from changing
             this.statusTimer.stop();
             // Reset status message
-            this.statusLabel.setText("Ready to crawl");
+            // this.statusLabel.setText("Ready to crawl");
         }
     }
 
+
+    /**
+     * Starts a timer that periodically updates the display with the current URL being processed.
+     * The timer fires every 500 milliseconds and retrieves the current URL from the Crawler class
+     * to display processing status information to the user.
+     */
     private void startStatusTimer() {
         this.statusTimer = new Timer(500, e -> {
             String currentUrl = Crawler.currentUrlBeingProcessed;
 
-            if (currentUrl != null && !currentUrl.isEmpty()) {
-                statusLabel.setText("Currently processing: " + currentUrl);
-            }
+            // if (currentUrl != null && !currentUrl.isEmpty()) {
+            //     statusLabel.setText("Currently processing: " + currentUrl);
+            // }
         });
         statusTimer.start();
     }
