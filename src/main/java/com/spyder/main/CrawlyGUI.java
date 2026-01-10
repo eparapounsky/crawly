@@ -1,5 +1,6 @@
 package com.spyder.main;
 
+import java.awt.Color;
 import java.lang.System.Logger;
 import java.lang.System.Logger.Level;
 
@@ -8,6 +9,8 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.Timer;
 
@@ -32,6 +35,9 @@ public class CrawlyGUI {
     private JLabel saveLocationLabel;
     private JTextField urlField;
     private JTextField saveLocationField;
+    private JLabel urlListLabel;
+    private JTextArea urlListArea;
+    private JScrollPane urlListScrollPane;
     // private JLabel statusLabel;
     private JButton startButton;
     private JButton stopButton;
@@ -58,12 +64,13 @@ public class CrawlyGUI {
         initializeUrlComponents();
         initializeSaveLocationComponents();
         // initializeStatusSection();
+        initializeUrlList();
         initializeButtons();
 
-        frame.add(mainPanel);
+        this.frame.add(this.mainPanel);
         // mainPanel.add(this.statusLabel);
-        mainPanel.add(buttonPanel); // keep buttons in vertical flow with input fields
-        frame.setVisible(true); // set frame to visible
+        // mainPanel.add(buttonPanel); // keep buttons in vertical flow with input fields
+        this.frame.setVisible(true); // set frame to visible
     }
 
     private void initializeUrlComponents() {
@@ -89,13 +96,31 @@ public class CrawlyGUI {
         this.mainPanel.add(saveLocationField); // add save location field to panel
     }
 
+    private void initializeUrlList() {
+        // create url list label
+        this.urlListLabel = createLabel("Processed URLs");
+        this.mainPanel.add(urlListLabel);
+
+        // create url list area
+        this.urlListArea = new JTextArea(10, 30);
+        this.urlListArea.setEditable(false);
+        this.urlListArea.setBackground(Color.WHITE);
+
+        // creat url list scroll pane
+        this.urlListScrollPane = new JScrollPane(urlListArea);
+        this.urlListScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        this.urlListScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
+        // add url list to main panel
+        this.mainPanel.add(urlListScrollPane);
+    }
+
     // private void initializeStatusSection() {
     //     this.mainPanel.add(javax.swing.Box.createVerticalStrut(ELEMENT_SPACING)); // add some vertical space
     //     this.statusLabel = createLabel("Ready to crawl");
     //     this.statusLabel.setBackground(STATUS_LABEL_BACKGROUND_COLOR);
     //     this.statusLabel.setForeground(STATUS_LABEL_TEXT_COLOR);
     // }
-
     private void initializeButtons() {
         // create Start and Stop buttons
         this.startButton = createButton("Start");
@@ -106,6 +131,9 @@ public class CrawlyGUI {
         this.buttonPanel.add(this.startButton);
         this.buttonPanel.add(javax.swing.Box.createHorizontalStrut(ELEMENT_SPACING)); // add some horizontal space
         this.buttonPanel.add(this.stopButton);
+
+        // add button panel to main panel, keeping buttons in vertical flow with input fields
+        this.mainPanel.add(buttonPanel);
     }
 
     private void addEventListeners() {
@@ -148,11 +176,11 @@ public class CrawlyGUI {
         }
     }
 
-
     /**
-     * Starts a timer that periodically updates the display with the current URL being processed.
-     * The timer fires every 500 milliseconds and retrieves the current URL from the Crawler class
-     * to display processing status information to the user.
+     * Starts a timer that periodically updates the display with the current URL
+     * being processed. The timer fires every 500 milliseconds and retrieves the
+     * current URL from the Crawler class to display processing status
+     * information to the user.
      */
     private void startStatusTimer() {
         this.statusTimer = new Timer(500, e -> {
