@@ -131,6 +131,12 @@ public class CrawlyGUI {
         this.stopButton.addActionListener(e -> handleStopButtonClick());
     }
 
+    /**
+     * Handles the start button click event to start the crawling process.
+     * Retrieves user input values and sets a default save location if needed.
+     * Clears the URL list, updates button states, and starts the crawler in a
+     * separate thread.
+     */
     private void handleStartButtonClick() {
         // Assign user-specified values to instance variables
         CrawlyGUI.this.url = CrawlyGUI.this.urlField.getText();
@@ -159,6 +165,11 @@ public class CrawlyGUI {
         runCrawlerInThread();
     }
 
+    /**
+     * Handles the stop button click event to terminate the active crawling
+     * operation. Interrupts the running crawler thread, updates the UI button
+     * states, and stops the status timer to prevent further updates.
+     */
     private void handleStopButtonClick() {
         // Although the thread can't be null here due to the button state, check to be safe
         if (this.crawlerThread != null && this.crawlerThread.isAlive()) {
@@ -174,10 +185,11 @@ public class CrawlyGUI {
     }
 
     /**
-     * Starts a timer that periodically updates the display with the current URL
-     * being processed. The timer fires every 500 milliseconds and retrieves the
-     * current URL from the Crawler class to display processing status
-     * information to the user.
+     * Starts a status timer that periodically monitors and displays the current
+     * URL being processed by the crawler. The timer runs every 200 milliseconds
+     * and updates the URL list area with new URLs as they are processed. It
+     * automatically scrolls to the bottom of the list to show the most recently
+     * processed URL.
      */
     private void startStatusTimer() {
         this.statusTimer = new Timer(200, e -> {
@@ -196,6 +208,11 @@ public class CrawlyGUI {
         statusTimer.start();
     }
 
+    /**
+     * Clears the URL list display area and resets the last processed URL. Uses
+     * SwingUtilities.invokeLater to ensure the UI updates are performed on the
+     * EDT for thread safety.
+     */
     private void clearUrlList() {
         SwingUtilities.invokeLater(() -> {
             this.urlListArea.setText("");
