@@ -69,7 +69,7 @@ When you run the application in GUI mode, you'll see this window with the follow
 
 - **Stop Button**: Immediately halts the crawling process
   - Gracefully stops the crawler and any active downloads
-  - Re-enables the Start button
+  - Re-enables the Start button (you can reuse it to start a new crawl)
   - Initially disabled until crawling begins
 
 #### Status Display
