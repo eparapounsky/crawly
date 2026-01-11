@@ -1,8 +1,12 @@
 package com.spyder.main;
 
+import java.awt.Image;
+import java.io.IOException;
 import java.lang.System.Logger;
 import java.lang.System.Logger.Level;
+import java.net.URL;
 
+import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -263,7 +267,20 @@ public class CrawlyGUI {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // exit application when window is closed
         frame.setSize(WINDOW_WIDTH, WINDOW_HEIGHT); // set window size
         frame.setLocationRelativeTo(null); // center window on screen
+        setApplicationIcon(frame); // set custom icon
         return frame;
+    }
+
+    private static void setApplicationIcon(JFrame frame) {
+        try {
+            URL iconURL = CrawlyGUI.class.getResource("/icon.png");
+            if (iconURL != null) {
+                Image icon = ImageIO.read(iconURL);
+                frame.setIconImage(icon);
+            }
+        } catch (IOException e) {
+            logger.log(Level.DEBUG, "Failed to load application icon: {0}", e.getMessage());
+        }
     }
 
     private static JPanel createVerticalPanel() {
