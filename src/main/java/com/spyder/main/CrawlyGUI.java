@@ -1,6 +1,5 @@
 package com.spyder.main;
 
-import java.awt.Color;
 import java.lang.System.Logger;
 import java.lang.System.Logger.Level;
 
@@ -94,21 +93,28 @@ public class CrawlyGUI {
 
     private void initializeUrlList() {
         // create url list label
+        this.mainPanel.add(javax.swing.Box.createVerticalStrut(ELEMENT_SPACING)); // add some vertical space
         this.urlListLabel = createLabel("Processed URLs");
         this.mainPanel.add(urlListLabel);
+        this.mainPanel.add(javax.swing.Box.createVerticalStrut(ELEMENT_SPACING)); // add some vertical space
 
         // create url list area
         this.urlListArea = new JTextArea(10, 30);
         this.urlListArea.setEditable(false);
-        this.urlListArea.setBackground(Color.WHITE);
 
         // creat url list scroll pane
         this.urlListScrollPane = new JScrollPane(urlListArea);
         this.urlListScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         this.urlListScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
-        // add url list to main panel
-        this.mainPanel.add(urlListScrollPane);
+        // create a panel to hold the scroll pane with horizontal padding
+        JPanel urlListPanel = createHorizontalPanel();
+        urlListPanel.add(javax.swing.Box.createHorizontalStrut(ELEMENT_SPACING * 2)); // left padding
+        urlListPanel.add(urlListScrollPane);
+        urlListPanel.add(javax.swing.Box.createHorizontalStrut(ELEMENT_SPACING * 2)); // right padding
+
+        // add url list panel to main panel
+        this.mainPanel.add(urlListPanel);
     }
 
     private void initializeButtons() {
