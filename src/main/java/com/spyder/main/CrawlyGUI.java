@@ -21,8 +21,6 @@ public class CrawlyGUI {
     private static final int WINDOW_HEIGHT = 450;
     private static final int WINDOW_WIDTH = 500;
     private static final int ELEMENT_SPACING = 15;
-    // private static final Color STATUS_LABEL_TEXT_COLOR = Color.RED;
-    // private static final Color STATUS_LABEL_BACKGROUND_COLOR = Color.WHITE;
 
     // Instance fields
     // Logger
@@ -39,7 +37,6 @@ public class CrawlyGUI {
     private JLabel urlListLabel;
     private JTextArea urlListArea;
     private JScrollPane urlListScrollPane;
-    // private JLabel statusLabel;
     private JButton startButton;
     private JButton stopButton;
 
@@ -48,6 +45,7 @@ public class CrawlyGUI {
     private String saveLocation;
     private Thread crawlerThread;
     private Timer statusTimer;
+    private String lastProcessedUrl = "";
 
     // Constructor
     public CrawlyGUI() {
@@ -64,13 +62,10 @@ public class CrawlyGUI {
 
         initializeUrlComponents();
         initializeSaveLocationComponents();
-        // initializeStatusSection();
         initializeUrlList();
         initializeButtons();
 
         this.frame.add(this.mainPanel);
-        // mainPanel.add(this.statusLabel);
-        // mainPanel.add(buttonPanel); // keep buttons in vertical flow with input fields
         this.frame.setVisible(true); // set frame to visible
     }
 
@@ -116,12 +111,6 @@ public class CrawlyGUI {
         this.mainPanel.add(urlListScrollPane);
     }
 
-    // private void initializeStatusSection() {
-    //     this.mainPanel.add(javax.swing.Box.createVerticalStrut(ELEMENT_SPACING)); // add some vertical space
-    //     this.statusLabel = createLabel("Ready to crawl");
-    //     this.statusLabel.setBackground(STATUS_LABEL_BACKGROUND_COLOR);
-    //     this.statusLabel.setForeground(STATUS_LABEL_TEXT_COLOR);
-    // }
     private void initializeButtons() {
         // create Start and Stop buttons
         this.startButton = createButton("Start");
@@ -181,12 +170,8 @@ public class CrawlyGUI {
             CrawlyGUI.this.stopButton.setEnabled(false);
             // Stop timer to prevent status from changing
             this.statusTimer.stop();
-            // Reset status message
-            // this.statusLabel.setText("Ready to crawl");
         }
     }
-
-    private String lastProcessedUrl = "";
 
     /**
      * Starts a timer that periodically updates the display with the current URL
@@ -199,13 +184,13 @@ public class CrawlyGUI {
             String currentUrl = Crawler.currentUrlBeingProcessed;
 
             // add url to list if different from last
-            if (currentUrl != null && !currentUrl.isEmpty() && !currentUrl.equals(lastProcessedUrl)) {
+            if (currentUrl != null && !currentUrl.isEmpty() && !currentUrl.equals(this.lastProcessedUrl)) {
                 SwingUtilities.invokeLater(() -> {
                     this.urlListArea.append(currentUrl + "\n");
                     this.urlListArea.setCaretPosition(urlListArea.getDocument().getLength()); // auto scroll to the bottom of the list to show the most recent url
                 });
 
-                lastProcessedUrl = currentUrl; // update for next comparison
+                this.lastProcessedUrl = currentUrl; // update for next comparison
             }
         });
         statusTimer.start();
@@ -214,7 +199,7 @@ public class CrawlyGUI {
     private void clearUrlList() {
         SwingUtilities.invokeLater(() -> {
             this.urlListArea.setText("");
-            lastProcessedUrl = "";
+            this.lastProcessedUrl = "";
         });
     }
 
