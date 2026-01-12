@@ -2,7 +2,17 @@
 
 A Java web crawler and scraper for creating offline website archives. Recursively downloads pages and images within a domain, rewrites links for local browsing, and runs with either command-line arguments or a GUI interface.
 
-## How to Download the Application
+## Example usage
+
+#### GUI after crawling a website:
+
+<img src="image-1.png" alt="GUI after crawling" width="500">
+
+#### Downloaded files after crawling:
+
+<img src="image-2.png" alt="Downloaded files after crawling" width="500">
+
+## How to Download Crawly
 
 You can download Crawly from the [Releases](../../releases) page in three formats:
 
@@ -14,7 +24,7 @@ You can download Crawly from the [Releases](../../releases) page in three format
 
 The `Crawly.exe` file was created using [Launch4j](https://launch4j.sourceforge.net/), a Java executable wrapper. Launch4j allows Java applications to be packaged as native Windows executables, providing a more user-friendly experience by eliminating the need to manually invoke Java from the command line. The executable automatically detects your Java installation and launches the application with the appropriate Java runtime.
 
-## How to Run the Application
+## How to Run Crawly
 
 ### Option 1: Run the Windows Executable (for Windows x86 users)
 
@@ -45,12 +55,11 @@ java -jar crawly-jar-with-dependencies.jar
 
 This will open the graphical user interface where you can enter the URL and save location.
 
-## How to Use the Application
-
-### GUI Interface
+## How to Use Crawly GUI
 
 When you run the application in GUI mode, you'll see this window with the following elements:
-![alt text](image.png)
+
+<img src="image.png" alt="GUI before crawling" width="500">
 
 #### Input Fields
 
@@ -79,12 +88,6 @@ When you run the application in GUI mode, you'll see this window with the follow
   - Updates every 200 milliseconds during crawling
   - Automatically scrolls to show the most recently processed URL
   - Gets cleared when you start a new crawl
-
-## Example usage:
-
-![alt text](image-1.png)
-
-![alt text](image-2.png)
 
 ## Current Features
 
