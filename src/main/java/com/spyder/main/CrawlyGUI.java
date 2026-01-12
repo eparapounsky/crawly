@@ -20,10 +20,18 @@ import javax.swing.Timer;
 
 public class CrawlyGUI {
 
+    // Static constants for application configuration
+    private static final int STATUS_TIMER_DELAY = 200;
+
     // Static constants for GUI dimensions and spacing
     private static final int WINDOW_HEIGHT = 450;
     private static final int WINDOW_WIDTH = 500;
     private static final int ELEMENT_SPACING = 15;
+    private static final int TEXT_FIELD_COLUMNS = 30;
+    private static final int URL_LIST_COLUMNS = 30;
+    private static final int URL_LIST_ROWS = 10;
+    private static final int BUTTON_WIDTH = 220;
+    private static final int BUTTON_HEIGHT = 50;
 
     // Instance fields
     // Logger
@@ -103,7 +111,7 @@ public class CrawlyGUI {
         this.mainPanel.add(javax.swing.Box.createVerticalStrut(ELEMENT_SPACING)); // add some vertical space
 
         // create url list area
-        this.urlListArea = new JTextArea(10, 30);
+        this.urlListArea = new JTextArea(URL_LIST_ROWS, URL_LIST_COLUMNS);
         this.urlListArea.setEditable(false);
 
         // creat url list scroll pane
@@ -202,7 +210,7 @@ public class CrawlyGUI {
      * processed URL.
      */
     private void startStatusTimer() {
-        this.statusTimer = new Timer(200, e -> {
+        this.statusTimer = new Timer(STATUS_TIMER_DELAY, e -> {
             String currentUrl = Crawler.currentUrlBeingProcessed;
 
             // add url to list if different from last
@@ -303,7 +311,7 @@ public class CrawlyGUI {
     }
 
     private static JTextField createTextField() {
-        JTextField textField = new JTextField(30);
+        JTextField textField = new JTextField(TEXT_FIELD_COLUMNS);
         textField.setMaximumSize(textField.getPreferredSize()); // prevent stretching, use size specified in constructor
         textField.setAlignmentX(JPanel.CENTER_ALIGNMENT); // center horizontally
         return textField;
@@ -311,7 +319,7 @@ public class CrawlyGUI {
 
     private static JButton createButton(String buttonText) {
         JButton button = new JButton(buttonText);
-        button.setBounds(150, 200, 220, 50); // set position and size
+        button.setPreferredSize(new java.awt.Dimension(BUTTON_WIDTH, BUTTON_HEIGHT)); // set preferred size for BoxLayout
         button.setAlignmentX(JPanel.CENTER_ALIGNMENT); // center horizontally
         return button;
     }
