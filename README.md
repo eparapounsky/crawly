@@ -18,7 +18,7 @@ You can download Crawly from the [Releases](../../releases) page in three format
 
 1. **Crawly.exe** - Windows executable (Windows x86 users only)
 2. **crawly-jar-with-dependencies.jar** - Fat JAR file (cross-platform and includes all dependencies, recommended for general use)
-3. **crawly-2.0.0.jar** - Thin JAR file (requires manual dependency management, <u>not</u> recommended for general use)
+3. **crawly-2.1.0.jar** - Thin JAR file (requires manual dependency management, <u>not</u> recommended for general use)
 
 ### About the Windows Executable
 
