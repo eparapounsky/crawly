@@ -37,7 +37,7 @@ Download `Crawly.exe` from Releases and double-click to launch the GUI applicati
 Download `crawly-jar-with-dependencies.jar` from Releases and run it using Java. Entering command line arguments will start the application in command line mode; omitting arguments will launch the GUI.
 
 - **URL**: Enter the website URL you want to crawl (<b>required</b>). The URL must include the protocol (e.g., `http://` or `https://`).
-- **Save Location**: Specify where you want to save the downloaded files (<b>optional</b>). If left empty, files will be saved to an `output` folder in the current directory.
+- **Save Location**: Specify where you want to save the downloaded files (<b>optional</b>). You can provide either a relative or an absolute path. If left empty, files will be saved to an `output` folder in the current directory.
 
 #### <u>Command Line Mode (with arguments)</u>
 
@@ -66,10 +66,10 @@ When you run the application in GUI mode, you'll see this window with the follow
 
 <img src="image.png" alt="GUI before crawling" width="500">
 
-### Input Fields
+#### Input Fields
 
 - **URL**: Enter the website URL you want to crawl (<b>required</b>). The URL must include the protocol (e.g., `http://` or `https://`).
-- **Save Location**: Specify where you want to save the downloaded files (<b>optional</b>). If left empty, files will be saved to an `output` folder in the current directory.
+- **Save Location**: Specify where you want to save the downloaded files (<b>optional</b>). You can provide either a relative or an absolute path. If left empty, files will be saved to an `output` folder in the current directory.
 
 #### Controls
 
