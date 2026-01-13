@@ -34,7 +34,10 @@ Download `Crawly.exe` from Releases and double-click to launch the GUI applicati
 
 ### Option 2: Run the JAR File
 
-Download `crawly-jar-with-dependencies.jar` from Releases and run it using Java. Entering command line arguments will start the application in command line mode; omitting arguments will launch the GUI. Entering a URL is required, but specifying a save location is optional. You can provide either a relative or an absolute path. If you don't specify a save location, the application will create a directory called `output` in the same directory where Crawly is running. 
+Download `crawly-jar-with-dependencies.jar` from Releases and run it using Java. Entering command line arguments will start the application in command line mode; omitting arguments will launch the GUI.
+
+- **URL**: Enter the website URL you want to crawl (<b>required</b>). The URL must include the protocol (e.g., `http://` or `https://`).
+- **Save Location**: Specify where you want to save the downloaded files (<b>optional</b>). If left empty, files will be saved to an `output` folder in the current directory.
 
 #### <u>Command Line Mode (with arguments)</u>
 
@@ -63,17 +66,16 @@ When you run the application in GUI mode, you'll see this window with the follow
 
 <img src="image.png" alt="GUI before crawling" width="500">
 
-#### Input Fields
+### Input Fields
 
-- **URL Field**: Enter the website URL you want to crawl (<b>required</b>). The URL must include the protocol (e.g., `http://` or `https://`).
-- **Save Location Field**: Specify where you want to save the downloaded files (<b>optional</b>). If left empty, files will be saved to an `output` folder in the current directory.
+- **URL**: Enter the website URL you want to crawl (<b>required</b>). The URL must include the protocol (e.g., `http://` or `https://`).
+- **Save Location**: Specify where you want to save the downloaded files (<b>optional</b>). If left empty, files will be saved to an `output` folder in the current directory.
 
 #### Controls
 
 - **Start Button**: Begins the web crawling process. You should shortly see a list of crawled URLs in the GUI.
 
 - **Stop Button**: Immediately stops the crawling process. You can view the list of crawled URLs until you begin a new crawl.
-
 
 #### Status Display
 
@@ -100,5 +102,5 @@ When you run the application in GUI mode, you'll see this window with the follow
 - **JSoup 1.17.2** - HTML parsing and web scraping
 - **Maven** - Dependency management and build tool
 - **Swing** - GUI framework for desktop interface
-- **JUnit 5** - Testing framework with embedded HTTP server
+- **JUnit 5** - Testing framework
 - **Launch4j** - Java executable wrapper for Windows
