@@ -2,6 +2,8 @@
 
 A Java web crawler and scraper for creating offline website archives. Recursively downloads pages and images within a domain, rewrites links for local browsing, and runs with either command-line arguments or a GUI interface.
 
+**Requirements**: Java 11 or higher
+
 ## Example usage
 
 #### GUI after crawling a website:
@@ -32,7 +34,7 @@ Download `Crawly.exe` from Releases and double-click to launch the GUI applicati
 
 ### Option 2: Run the JAR File
 
-Download `crawly-jar-with-dependencies.jar` from Releases and run it using Java. Entering command line arguments will start the application in command line mode; omitting arguments will launch the GUI.
+Download `crawly-jar-with-dependencies.jar` from Releases and run it using Java. Entering command line arguments will start the application in command line mode; omitting arguments will launch the GUI. Entering a URL is required, but specifying a save location is optional. You can provide either a relative or an absolute path. If you don't specify a save location, the application will create a directory called `output` in the same directory where Crawly is running. 
 
 #### <u>Command Line Mode (with arguments)</u>
 
@@ -68,26 +70,14 @@ When you run the application in GUI mode, you'll see this window with the follow
 
 #### Controls
 
-- **Start Button**: Begins the web crawling process
+- **Start Button**: Begins the web crawling process. You should shortly see a list of crawled URLs in the GUI.
 
-  - Validates the entered URL
-  - Creates the save directory if it doesn't exist
-  - Starts crawling in a background thread to keep the GUI responsive
-  - Becomes disabled while crawling is active
-  - Automatically sets the save location to `./output` if no location is specified
+- **Stop Button**: Immediately stops the crawling process. You can view the list of crawled URLs until you begin a new crawl.
 
-- **Stop Button**: Immediately halts the crawling process
-  - Gracefully stops the crawler and any active downloads
-  - Re-enables the Start button (you can reuse it to start a new crawl)
-  - Initially disabled until crawling begins
 
 #### Status Display
 
-- **Processed URLs List**: A scrollable text area that shows:
-  - All URLs being processed in real-time
-  - Updates every 200 milliseconds during crawling
-  - Automatically scrolls to show the most recently processed URL
-  - Gets cleared when you start a new crawl
+- **Processed URLs List**: A scrollable text area that shows all URLs being processed in real-time. Cleared when you start a new crawl.
 
 ## Current Features
 
