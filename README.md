@@ -10,6 +10,10 @@ A Java web crawler and scraper for creating offline website archives. Recursivel
 
 <img src="image-1.png" alt="GUI after crawling" width="500">
 
+#### CLI after crawling a website:
+
+<img src="image-3.png" alt="CLI after crawling" width="500">
+
 #### Downloaded files after crawling:
 
 <img src="image-2.png" alt="Downloaded files after crawling" width="500">
