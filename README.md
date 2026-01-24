@@ -35,6 +35,7 @@ The `Crawly.exe` file was created using [Launch4j](https://launch4j.sourceforge.
 ### Option 1: Run the Windows Executable (for Windows x86 users)
 
 Download `Crawly.exe` from Releases and double-click to launch the GUI application.
+See the [How to Use Crawly GUI](#how-to-use-crawly-gui) section below for instructions.
 
 ### Option 2: Run the JAR File
 
@@ -62,7 +63,7 @@ java -jar crawly-jar-with-dependencies.jar http://example.com ./downloads
 java -jar crawly-jar-with-dependencies.jar
 ```
 
-This will open the graphical user interface where you can enter the URL and save location.
+This will open the graphical user interface where you can enter the URL and save location. See the [How to Use Crawly GUI](#how-to-use-crawly-gui) section below for instructions.
 
 ## How to Use Crawly GUI
 
